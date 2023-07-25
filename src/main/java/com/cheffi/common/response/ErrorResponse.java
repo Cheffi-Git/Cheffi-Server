@@ -35,7 +35,7 @@ public class ErrorResponse {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         for (FieldError fieldError : fieldErrors) {
             if(!isFirst){
-                sb.append(",");
+                sb.append(", ");
             } else {
                 isFirst = false;
             }
