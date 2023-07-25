@@ -7,8 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class CheffiApplication {
 
 	public static void main(String[] args) {
-
 		SpringApplication.run(CheffiApplication.class, args);
-
 	}
 }

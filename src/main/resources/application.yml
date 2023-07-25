@@ -1,2 +1,6 @@
 springdoc:
   packages-to-scan: com.cheffi
+spring:
+  h2:
+    console:
+      enabled: true
