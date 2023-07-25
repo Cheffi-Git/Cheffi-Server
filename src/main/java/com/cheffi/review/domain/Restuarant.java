@@ -1,4 +1,4 @@
-package com.cheffi.common.config.review.domain;
+package com.cheffi.review.domain;
 
 import com.cheffi.common.constant.Address;
 import com.cheffi.common.constant.DetailedAddress;
