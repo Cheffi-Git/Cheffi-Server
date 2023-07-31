@@ -14,6 +14,7 @@ import org.springframework.security.web.header.writers.frameoptions.XFrameOption
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @EnableWebSecurity
 public class SecurityConfig {
+
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 

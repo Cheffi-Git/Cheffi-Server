@@ -4,6 +4,7 @@ import com.cheffi.common.dto.RatingInfoDto;
 import com.cheffi.common.dto.RestaurantInfoDto;
 import com.cheffi.common.dto.ReviewInfoDto;
 import com.cheffi.common.dto.ReviewPhotoInfoDto;
+import com.cheffi.review.dto.request.RegisterReviewRequest;
 import com.cheffi.review.dto.response.GetRegionalReviewsResponseDto;
 import com.cheffi.review.dto.response.GetReviewResponseDto;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import java.util.List;
 @Transactional
 @Service
 public class ReviewService {
+
 
     public GetReviewResponseDto getReview(Long reviewId) {
 
@@ -58,6 +60,11 @@ public class ReviewService {
         }
 
         return mockDtoes;
+    }
+
+
+    public void registerReview(RegisterReviewRequest requestDto) {
+
     }
 
 }

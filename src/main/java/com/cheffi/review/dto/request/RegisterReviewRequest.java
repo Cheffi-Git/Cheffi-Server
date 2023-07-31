@@ -15,7 +15,7 @@ import java.util.Map;
 @NoArgsConstructor
 @ToString
 @Getter @Setter
-public class RegistReviewRequest {
+public class RegisterReviewRequest {
 
     @NotBlank
     @Schema(description = "식당 이름")
@@ -37,12 +37,12 @@ public class RegistReviewRequest {
     private Map<String, String> foodInfo;
 
     @Builder
-    public RegistReviewRequest(String restaurantName,
-                               int addressCode,
-                               String title,
-                               String text,
-                               List<MultipartFile> files,
-                               Map<String, String> foodInfo) {
+    public RegisterReviewRequest(String restaurantName,
+                                 int addressCode,
+                                 String title,
+                                 String text,
+                                 List<MultipartFile> files,
+                                 Map<String, String> foodInfo) {
 
         this.restaurantName = restaurantName;
         this.addressCode = addressCode;
