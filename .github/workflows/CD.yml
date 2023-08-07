@@ -1,0 +1,39 @@
+name: Cheffi CD
+
+on:
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - name: Set execute permissions for Gradle wrapper
+      run: chmod +x gradlew
+    - name: Build project with Gradle
+      run: ./gradlew clean build
+    - name: Create pem key file from GitHub secret
+      run: |
+        echo "${{ secrets.LSH_PEM_KEY }}" > deploy_key.pem
+        chmod 600 deploy_key.pem
+    - name: Transfer jar file to remote server
+      run: |
+        scp -i deploy_key.pem ./build/libs/cheffi-0.0.1-SNAPSHOT.jar ec2-user@54.180.121.220:/home/ec2-user/cheffifolder
+    - name: Execute commands on remote server
+      run: |
+        ssh -i deploy_key.pem ec2-user@54.180.121.220 << EOF
+          cd /home/ec2-user/cheffifolder
+          lsof -ti:8080 | xargs kill -9
+          nohup java -jar cheffi-0.0.1-SNAPSHOT.jar > app.log &
+        EOF
