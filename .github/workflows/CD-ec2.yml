@@ -31,11 +31,10 @@ jobs:
         host: ${{ secrets.LSH_EC2_HOST }}
         username: ${{ secrets.LSH_EC2_USER }}
         key: ${{ secrets.LSH_EC2_KEY }}
-        source: |
+        source: ./Dockerfile
           # "build/libs/*.jar"
           #./docker-compose.yml
           # ./docker-compose-helper.yml
-          ./Dockerfile
           # ./Dockerfile-helper
         target: "/home/ec2-user/cheffifolder"
 
