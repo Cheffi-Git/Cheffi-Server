@@ -21,9 +21,7 @@ jobs:
         distribution: 'temurin'
 
     - name: Build with Gradlew
-      run: |
-        # ./gradlew build -x test
-        ls ./
+      run: ./gradlew build -x test
 
     - name: SCP JAR to EC2
       uses: appleboy/scp-action@master
@@ -31,11 +29,7 @@ jobs:
         host: ${{ secrets.LSH_EC2_HOST }}
         username: ${{ secrets.LSH_EC2_USER }}
         key: ${{ secrets.LSH_EC2_KEY }}
-        source: "./Dockerfile, ./Dockerfile-helper"
-          # "build/libs/*.jar"
-          #./docker-compose.yml
-          # ./docker-compose-helper.yml
-          # ./Dockerfile-helper
+        source: "build/libs/*.jar, ./Dockerfile, ./Dockerfile-helper, ./docker-compose.yml , ./docker-compose-helper.yml"
         target: "/home/ec2-user/cheffifolder"
 
     # - name: SSH Execute command on EC2
