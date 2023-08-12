@@ -20,8 +20,10 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build with Gradlew
-      run: ./gradlew build -x test
+    - name: Build with Gradlew and list files
+      run: |
+        ./gradlew build -x test
+        ls
 
     - name: SCP JAR to EC2
       uses: appleboy/scp-action@master
