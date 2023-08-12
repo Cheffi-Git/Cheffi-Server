@@ -29,7 +29,12 @@ jobs:
         host: ${{ secrets.LSH_EC2_HOST }}
         username: ${{ secrets.LSH_EC2_USER }}
         key: ${{ secrets.LSH_EC2_KEY }}
-        source: "build/libs/*.jar"
+        source: |
+          "build/libs/*.jar"
+          "./docker-compose.yml"
+          "./docker-compose-helper.yml"
+          "./Dockerfile"
+          "./Dockerfile-helper"
         target: "/home/ec2-user/cheffifolder"
 
     - name: SSH Execute command on EC2
@@ -40,11 +45,12 @@ jobs:
         key: ${{ secrets.LSH_EC2_KEY }}
         script: |
 
-          # 실행중인 app 종료
-          if lsof -Pi :8080 -sTCP:LISTEN -t >/dev/null ; then
-          echo "Port 8080 is already in use. Killing the process..."
-          kill $(lsof -t -i:8080)
-          fi
+          # # 실행중인 app 종료
+          # if lsof -Pi :8080 -sTCP:LISTEN -t >/dev/null ; then
+          # echo "Port 8080 is already in use. Killing the process..."
+          # kill $(lsof -t -i:8080)
+          # fi
           
           cd /home/ec2-user/cheffifolder
-          nohup java -jar *.jar > /home/ec2-user/cheffifolder/cheffi.log 2>&1 &
+          ls
+          # nohup java -jar *.jar > /home/ec2-user/cheffifolder/cheffi.log 2>&1 &
