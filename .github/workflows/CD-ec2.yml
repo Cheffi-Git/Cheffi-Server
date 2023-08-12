@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   pull_request:
     branches:
-      - develop
+      - develop-CD-Test
 
 jobs:
   build:
