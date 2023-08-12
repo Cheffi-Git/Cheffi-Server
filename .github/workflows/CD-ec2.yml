@@ -20,6 +20,15 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Check file existence
+      run: |
+        ls -al build/libs/
+        ls -al ./docker-compose.yml || echo "docker-compose.yml does not exist"
+        ls -al ./docker-compose-helper.yml || echo "docker-compose-helper.yml does not exist"
+        ls -al ./Dockerfile || echo "Dockerfile does not exist"
+        ls -al ./Dockerfile-helper || echo "Dockerfile-helper does not exist"
+
+
     - name: Build with Gradlew
       run: ./gradlew build -x test
 
