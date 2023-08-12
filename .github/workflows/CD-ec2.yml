@@ -21,30 +21,32 @@ jobs:
         distribution: 'temurin'
 
     - name: Build with Gradlew
-      run: ./gradlew build -x test
+      run: |
+        # ./gradlew build -x test
+        ls ./
 
-    - name: SCP JAR to EC2
-      uses: appleboy/scp-action@master
-      with:
-        host: ${{ secrets.LSH_EC2_HOST }}
-        username: ${{ secrets.LSH_EC2_USER }}
-        key: ${{ secrets.LSH_EC2_KEY }}
-        source: |
-          "build/libs/*.jar"
-          ls ./
-          "./docker-compose.yml"
-          "./docker-compose-helper.yml"
-          "./Dockerfile"
-          "./Dockerfile-helper"
-        target: "/home/ec2-user/cheffifolder"
+    # - name: SCP JAR to EC2
+    #   uses: appleboy/scp-action@master
+    #   with:
+    #     host: ${{ secrets.LSH_EC2_HOST }}
+    #     username: ${{ secrets.LSH_EC2_USER }}
+    #     key: ${{ secrets.LSH_EC2_KEY }}
+    #     source: |
+    #       "build/libs/*.jar"
+    #       ls ./
+    #       "./docker-compose.yml"
+    #       "./docker-compose-helper.yml"
+    #       "./Dockerfile"
+    #       "./Dockerfile-helper"
+    #     target: "/home/ec2-user/cheffifolder"
 
-    - name: SSH Execute command on EC2
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.LSH_EC2_HOST }}
-        username: ${{ secrets.LSH_EC2_USER }}
-        key: ${{ secrets.LSH_EC2_KEY }}
-        script: |
+    # - name: SSH Execute command on EC2
+    #   uses: appleboy/ssh-action@master
+    #   with:
+    #     host: ${{ secrets.LSH_EC2_HOST }}
+    #     username: ${{ secrets.LSH_EC2_USER }}
+    #     key: ${{ secrets.LSH_EC2_KEY }}
+    #     script: |
 
           # # 실행중인 app 종료
           # if lsof -Pi :8080 -sTCP:LISTEN -t >/dev/null ; then
@@ -52,6 +54,6 @@ jobs:
           # kill $(lsof -t -i:8080)
           # fi
           
-          cd /home/ec2-user/cheffifolder
-          ls
+          # cd /home/ec2-user/cheffifolder
+          # ls
           # nohup java -jar *.jar > /home/ec2-user/cheffifolder/cheffi.log 2>&1 &
