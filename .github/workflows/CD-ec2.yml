@@ -22,23 +22,22 @@ jobs:
 
     - name: Build with Gradlew
       run: |
-        ./gradlew build -x test
+        # ./gradlew build -x test
         ls ./
 
-    # - name: SCP JAR to EC2
-    #   uses: appleboy/scp-action@master
-    #   with:
-    #     host: ${{ secrets.LSH_EC2_HOST }}
-    #     username: ${{ secrets.LSH_EC2_USER }}
-    #     key: ${{ secrets.LSH_EC2_KEY }}
-    #     source: |
-    #       "build/libs/*.jar"
-    #       ls ./
-    #       "./docker-compose.yml"
-    #       "./docker-compose-helper.yml"
-    #       "./Dockerfile"
-    #       "./Dockerfile-helper"
-    #     target: "/home/ec2-user/cheffifolder"
+    - name: SCP JAR to EC2
+      uses: appleboy/scp-action@master
+      with:
+        host: ${{ secrets.LSH_EC2_HOST }}
+        username: ${{ secrets.LSH_EC2_USER }}
+        key: ${{ secrets.LSH_EC2_KEY }}
+        source: |
+          # "build/libs/*.jar"
+          "./docker-compose.yml"
+          "./docker-compose-helper.yml"
+          "./Dockerfile"
+          "./Dockerfile-helper"
+        target: "/home/ec2-user/cheffifolder"
 
     # - name: SSH Execute command on EC2
     #   uses: appleboy/ssh-action@master
