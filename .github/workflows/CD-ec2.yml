@@ -22,7 +22,7 @@ jobs:
 
     - name: Build with Gradlew
       run: |
-        # ./gradlew build -x test
+        ./gradlew build -x test
         ls ./
 
     # - name: SCP JAR to EC2
