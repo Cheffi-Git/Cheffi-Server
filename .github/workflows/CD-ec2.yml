@@ -33,7 +33,7 @@ jobs:
         key: ${{ secrets.LSH_EC2_KEY }}
         source: |
           # "build/libs/*.jar"
-          ./docker-compose.yml
+          docker-compose.yml
           # ./docker-compose-helper.yml
           # ./Dockerfile
           # ./Dockerfile-helper
