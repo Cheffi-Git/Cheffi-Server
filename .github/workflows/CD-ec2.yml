@@ -32,10 +32,10 @@ jobs:
         key: ${{ secrets.LSH_EC2_KEY }}
         source: |
           "build/libs/*.jar"
-          "./Dockerfile"
-          "./Dockerfile-helper"
-          "./docker-compose.yml"
-          "./docker-compose-helper.yml"
+          "cat ./Dockerfile"
+          "cat ./Dockerfile-helper"
+          "cat ./docker-compose.yml"
+          "cat ./docker-compose-helper.yml"
         target: "/home/ec2-user/cheffifolder"
 
     - name: SSH Execute command on EC2
