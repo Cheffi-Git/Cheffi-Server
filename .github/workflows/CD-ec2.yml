@@ -31,7 +31,7 @@ jobs:
         host: ${{ secrets.LSH_EC2_HOST }}
         username: ${{ secrets.LSH_EC2_USER }}
         key: ${{ secrets.LSH_EC2_KEY }}
-        source: ./Dockerfile
+        source: "./Dockerfile, ./Dockerfile-helper"
           # "build/libs/*.jar"
           #./docker-compose.yml
           # ./docker-compose-helper.yml
