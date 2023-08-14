@@ -27,3 +27,30 @@ spring:
 
 api:
   prefix: /api/v1
+
+
+# monitoring setting start
+management:
+  #  server:
+  #    port: 50000
+  endpoint:
+    httpexchanges:
+      enabled: true
+    metrics:
+      enabled: true
+    prometheus:
+      enabled: true
+  endpoints:
+    web:
+      base-path: /cheffi-monitoring
+      exposure:
+        include:
+          - health
+          - info
+          - beans
+          - conditions
+          - httpexchanges
+          - metrics
+          - prometheus
+          - configprops
+# monitoring setting end
