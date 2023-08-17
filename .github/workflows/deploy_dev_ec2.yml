@@ -55,7 +55,7 @@ jobs:
           host: ${{ secrets.LSH_EC2_HOST }}
           username: ${{ secrets.LSH_EC2_USER }}
           key: ${{ secrets.LSH_EC2_KEY }}
-          source: "./cheffi-0.0.2-SNAPSHOT.jar, ./Dockerfile, ./docker-compose.yml"
+          source: "./*.jar, ./Dockerfile, ./docker-compose.yml"
           target: "/home/ec2-user/cheffifolder"
 
       - name: SSH Execute command on EC2
