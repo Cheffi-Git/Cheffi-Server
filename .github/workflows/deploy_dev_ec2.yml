@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - develop
+      - hotfix/CICD
   workflow_dispatch:
 
 jobs:
@@ -36,6 +36,8 @@ jobs:
           name: build-artifacts
           path: |
             build/libs/*.jar
+            Dockerfile
+            docker-compose.yml
 
 
   deploy:
