@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - develop
+      - hotfix/CICD
   workflow_dispatch:
 
 jobs:
@@ -27,8 +27,12 @@ jobs:
           OAUTH_SECRET_DIR_FILE_NAME: application-oauth.yml
         run: echo $OAUTH_SECRET | base64 --decode > $OAUTH_SECRET_DIR/$OAUTH_SECRET_DIR_FILE_NAME
 
-      - name: Build with Gradlew
-        run: ./gradlew clean build
+      - name: Build with Gradlew and list files
+        run: |
+          ./gradlew clean build &&
+          ls &&
+          ls build/libs/
+
 
   deploy:
     name: Deploy with SCP and Docker
