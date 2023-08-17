@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - hotfix/CICD
+      - develop
   workflow_dispatch:
 
 jobs:
