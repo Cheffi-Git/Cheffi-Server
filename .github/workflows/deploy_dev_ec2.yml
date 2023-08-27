@@ -82,15 +82,15 @@ jobs:
             docker image prune -f
             docker-compose up --build -d
 
-      - name: Deployment Notification
-        uses: 8398a7/action-slack@v3
-        with:
-          status: ${{ job.status }}
-          author_name: dev-deploy-job
-          text: 'dev-server-deployment'
-          fields: repo,message,commit,author,ref,workflow,job,took,pullRequest
-          mention: 'U05BT7J8YV8,U05BT2V4C58'
-          if_mention: failure
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
-        if: always() # Pick up events even if the job fails or is canceled.
+      # - name: Deployment Notification
+      #   uses: 8398a7/action-slack@v3
+      #   with:
+      #     status: ${{ job.status }}
+      #     author_name: dev-deploy-job
+      #     text: 'dev-server-deployment'
+      #     fields: repo,message,commit,author,ref,workflow,job,took,pullRequest
+      #     mention: 'U05BT7J8YV8,U05BT2V4C58'
+      #     if_mention: failure
+      #   env:
+      #     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+      #   if: always() # Pick up events even if the job fails or is canceled.
