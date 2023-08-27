@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - testcicd
+      - cicdtest
   workflow_dispatch:
 
 jobs:
