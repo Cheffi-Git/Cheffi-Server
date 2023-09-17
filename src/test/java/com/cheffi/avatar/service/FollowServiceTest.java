@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.util.Optional;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.cheffi.avatar.domain.Avatar;
@@ -31,8 +33,10 @@ class FollowServiceTest {
 	private AvatarRepository avatarRepository;
 	@Mock
 	private FollowRepository followRepository;
+	@Mock
+	private ProfilePhotoService profilePhotoService;
 
-	@InjectMocks
+	private AvatarService avatarService;
 	private FollowService followService;
 
 	@Mock
@@ -42,8 +46,15 @@ class FollowServiceTest {
 	@Mock
 	private Follow follow;
 
-	private static long FOLLOWER_ID = 1L;
-	private static long FOLLOWEE_ID = 2L;
+	private static final long FOLLOWER_ID = 1L;
+	private static final long FOLLOWEE_ID = 2L;
+
+	@BeforeEach
+	void setUp() {
+		avatarService = new AvatarService(avatarRepository, profilePhotoService);
+		followService = new FollowService(followRepository, avatarService);
+	}
+
 
 	@Nested
 	@DisplayName("addFollow 메서드")
@@ -53,11 +64,11 @@ class FollowServiceTest {
 		@DisplayName("성공 - 팔로우 등록")
 		void successAddFollow() {
 
-			MockedStatic<Follow> staticFollow = Mockito.mockStatic(Follow.class);
-			MockedStatic<AddFollowResponse> staticAddFollowResponse = Mockito.mockStatic(AddFollowResponse.class);
 			AddFollowResponse addFollowResponse = new AddFollowResponse(FOLLOWER_ID, FOLLOWEE_ID);
 
-			try {
+			try (MockedStatic<Follow> staticFollow = Mockito.mockStatic(
+				Follow.class); MockedStatic<AddFollowResponse> staticAddFollowResponse = Mockito.mockStatic(
+				AddFollowResponse.class)) {
 				when(avatarRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
 				when(avatarRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
 				when(followRepository
@@ -75,9 +86,6 @@ class FollowServiceTest {
 
 				assertEquals(FOLLOWER_ID, response.followerId());
 				assertEquals(FOLLOWEE_ID, response.followeeId());
-			} finally {
-				staticFollow.close();
-				staticAddFollowResponse.close();
 			}
 
 		}
@@ -118,27 +126,17 @@ class FollowServiceTest {
 		@DisplayName("성공 - 팔로우 취소")
 		void successUnFollow() {
 
-			MockedStatic<UnfollowResponse> staticUnFollowResponse = Mockito.mockStatic(UnfollowResponse.class);
-			UnfollowResponse unfollowResponse = new UnfollowResponse(FOLLOWER_ID, FOLLOWEE_ID);
-
-			try {
 				when(avatarRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
 				when(avatarRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
 				when(followRepository
 					.findBySubjectAndTarget(follower, followee))
 					.thenReturn(Optional.of(follow));
 				doNothing().when(followRepository).delete(follow);
-				staticUnFollowResponse
-					.when(() -> UnfollowResponse.from(follow))
-					.thenReturn(unfollowResponse);
 
 				UnfollowResponse response = followService.unfollow(FOLLOWER_ID, FOLLOWEE_ID);
 
 				assertEquals(FOLLOWER_ID, response.followerId());
 				assertEquals(FOLLOWEE_ID, response.followeeId());
-			} finally {
-				staticUnFollowResponse.close();
-			}
 		}
 
 		@Test

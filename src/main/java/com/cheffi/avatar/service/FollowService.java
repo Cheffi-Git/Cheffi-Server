@@ -11,11 +11,9 @@ import com.cheffi.avatar.dto.response.AddFollowResponse;
 import com.cheffi.avatar.dto.response.GetFollowResponse;
 import com.cheffi.avatar.dto.response.RecommendFollowResponse;
 import com.cheffi.avatar.dto.response.UnfollowResponse;
-import com.cheffi.avatar.repository.AvatarRepository;
 import com.cheffi.avatar.repository.FollowRepository;
 import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.BusinessException;
-import com.cheffi.common.config.exception.business.EntityNotFoundException;
 
 import lombok.RequiredArgsConstructor;
 
@@ -24,15 +22,15 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class FollowService {
 
-	private final AvatarRepository avatarRepository;
 	private final FollowRepository followRepository;
+	private final AvatarService avatarService;
 
 
 	@Transactional
 	public AddFollowResponse addFollow(Long followerId, Long followeeId) {
 
-		Avatar follower = fetchFollow(followerId);
-		Avatar followee = fetchFollow(followeeId);
+		Avatar follower = avatarService.getById(followerId);
+		Avatar followee = avatarService.getById(followeeId);
 
 		if (followRepository.existsBySubjectAndTarget(followee, follower)) {
 			throw new BusinessException(ErrorCode.ALREADY_FOLLOWED);
@@ -46,16 +44,14 @@ public class FollowService {
 	@Transactional
 	public UnfollowResponse unfollow(Long followerId, Long followeeId) {
 
-		Avatar follower = fetchFollow(followerId);
-		Avatar followee = fetchFollow(followeeId);
+		Avatar follower = avatarService.getById(followerId);
+		Avatar followee = avatarService.getById(followeeId);
 
-		Follow followToDelete = followRepository.findBySubjectAndTarget(follower, followee)
-			.orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOLLOWED));
+		followRepository.delete(getByFollowerAndFollowee(follower, followee));
 
-		followRepository.delete(followToDelete);
-
-		return UnfollowResponse.from(followToDelete);
+		return new UnfollowResponse(followerId, followeeId);
 	}
+
 
 	public List<GetFollowResponse> getFollowee(Long userId) {
 		return GetFollowResponse.mock();
@@ -66,8 +62,8 @@ public class FollowService {
 	}
 
 
-	public Avatar fetchFollow(Long followerId) {
-		return avatarRepository.findById(followerId)
-			.orElseThrow(() -> new EntityNotFoundException(ErrorCode.AVATAR_NOT_EXISTS));
+	private Follow getByFollowerAndFollowee(Avatar follower, Avatar followee) {
+		return followRepository.findBySubjectAndTarget(follower, followee)
+			.orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOLLOWED));
 	}
 }
