@@ -62,8 +62,8 @@ public class FollowController {
 		security = {@SecurityRequirement(name = "session-token")})
 	@PreAuthorize("hasRole('USER')")
 	@GetMapping
-	public ApiResponse<List<GetFollowResponse>> getMyFollowee() {
-		return ApiResponse.success(followService.getFollowee(1L));
+	public ApiResponse<List<GetFollowResponse>> getMyFollowee(@AuthenticationPrincipal UserPrincipal principal) {
+		return ApiResponse.success(followService.getFollowee(principal.getAvatarId()));
 	}
 
 	@Tag(name = "Follow")

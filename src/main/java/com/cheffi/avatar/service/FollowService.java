@@ -53,8 +53,11 @@ public class FollowService {
 	}
 
 
-	public List<GetFollowResponse> getFollowee(Long userId) {
-		return GetFollowResponse.mock();
+	public List<GetFollowResponse> getFollowee(Long avatarId) {
+
+		Avatar subject = avatarService.getById(avatarId);
+
+		return GetFollowResponse.mapFollowsToResponses(followRepository.findFollowsBySubject(subject));
 	}
 
 	public List<RecommendFollowResponse> recommendFollowee(Long userId) {

@@ -3,6 +3,8 @@ package com.cheffi.avatar.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -10,16 +12,15 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.cheffi.avatar.domain.Avatar;
 import com.cheffi.avatar.domain.Follow;
 import com.cheffi.avatar.dto.response.AddFollowResponse;
+import com.cheffi.avatar.dto.response.GetFollowResponse;
 import com.cheffi.avatar.dto.response.UnfollowResponse;
 import com.cheffi.avatar.repository.AvatarRepository;
 import com.cheffi.avatar.repository.FollowRepository;
@@ -36,7 +37,6 @@ class FollowServiceTest {
 	@Mock
 	private ProfilePhotoService profilePhotoService;
 
-	private AvatarService avatarService;
 	private FollowService followService;
 
 	@Mock
@@ -45,16 +45,67 @@ class FollowServiceTest {
 	private Avatar followee;
 	@Mock
 	private Follow follow;
+	@Mock
+	private Follow follow2;
+
+	private List<Follow> follows;
 
 	private static final long FOLLOWER_ID = 1L;
 	private static final long FOLLOWEE_ID = 2L;
 
 	@BeforeEach
 	void setUp() {
-		avatarService = new AvatarService(avatarRepository, profilePhotoService);
+		AvatarService avatarService = new AvatarService(avatarRepository, profilePhotoService);
 		followService = new FollowService(followRepository, avatarService);
 	}
 
+	@Nested
+	@DisplayName("getFollowee 메서드")
+	class getFollowee {
+
+		@Test
+		@DisplayName("성공 - 팔로우중인 회원 1명이상 검색된 경우")
+		void successGetFollowee_case1() {
+
+			follows = List.of(follow, follow2);
+
+			when(avatarRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+			when(follow.getTarget()).thenReturn(followee);
+			when(follow2.getTarget()).thenReturn(followee);
+			when(followRepository.findFollowsBySubject(follower)).thenReturn(follows);
+
+			List<GetFollowResponse> response = followService.getFollowee(FOLLOWER_ID);
+
+			assertNotNull(response);
+			assertEquals(2, response.size());
+		}
+
+		@Test
+		@DisplayName("성공 - 팔로우중인 회원 0명 검색된 경우")
+		void successGetFollowee_case2() {
+
+			follows = Collections.emptyList();
+
+			when(avatarRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
+			when(followRepository.findFollowsBySubject(follower)).thenReturn(follows);
+
+			List<GetFollowResponse> response = followService.getFollowee(FOLLOWER_ID);
+
+			assertNotNull(response);
+			assertEquals(0, response.size());
+		}
+
+		@Test
+		@DisplayName("실패 - 존재하지 않는 아바타로 팔로잉 목록 조회 시도")
+		void fail_getFollowee_AVATAR_NOT_EXISTS() {
+
+			when(avatarRepository.findById(FOLLOWER_ID)).thenReturn(Optional.empty());
+
+			assertThrows(EntityNotFoundException.class, () -> {
+				followService.addFollow(FOLLOWER_ID, FOLLOWEE_ID);
+			});
+		}
+	}
 
 	@Nested
 	@DisplayName("addFollow 메서드")
@@ -78,7 +129,7 @@ class FollowServiceTest {
 					.when(() -> Follow.createFollowRelationship(follower, followee))
 					.thenReturn(follow);
 				staticAddFollowResponse
-					.when(() -> AddFollowResponse.from(follow))
+					.when(() -> AddFollowResponse.of(follow))
 					.thenReturn(addFollowResponse);
 				when(followRepository.save(follow)).thenReturn(follow);
 
@@ -166,5 +217,6 @@ class FollowServiceTest {
 		}
 
 	}
+
 
 }
