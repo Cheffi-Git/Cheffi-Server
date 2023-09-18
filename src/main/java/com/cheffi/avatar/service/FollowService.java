@@ -38,7 +38,7 @@ public class FollowService {
 
 		Follow createdFollow = followRepository.save(Follow.createFollowRelationship(follower, followee));
 
-		return AddFollowResponse.from(createdFollow);
+		return AddFollowResponse.of(createdFollow);
 	}
 
 	@Transactional
@@ -62,7 +62,7 @@ public class FollowService {
 	}
 
 
-	private Follow getByFollowerAndFollowee(Avatar follower, Avatar followee) {
+	public Follow getByFollowerAndFollowee(Avatar follower, Avatar followee) {
 		return followRepository.findBySubjectAndTarget(follower, followee)
 			.orElseThrow(() -> new BusinessException(ErrorCode.NOT_FOLLOWED));
 	}
