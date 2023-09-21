@@ -38,7 +38,7 @@ public class FollowService {
 
 		Follow createdFollow = followRepository.save(Follow.createFollowRelationship(follower, followee));
 
-		return AddFollowResponse.from(createdFollow);
+		return AddFollowResponse.of(createdFollow);
 	}
 
 	@Transactional

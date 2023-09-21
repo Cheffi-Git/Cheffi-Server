@@ -65,8 +65,7 @@ class FollowServiceTest {
 			AddFollowResponse addFollowResponse = new AddFollowResponse(FOLLOWER_ID, FOLLOWEE_ID);
 
 			try (MockedStatic<Follow> staticFollow = Mockito.mockStatic(Follow.class);
-				 MockedStatic<AddFollowResponse> staticAddFollowResponse = Mockito.mockStatic(
-				AddFollowResponse.class)) {
+				 MockedStatic<AddFollowResponse> staticAddFollowResponse = Mockito.mockStatic(AddFollowResponse.class)) {
 				when(avatarRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
 				when(avatarRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
 				when(followRepository
@@ -76,7 +75,7 @@ class FollowServiceTest {
 					.when(() -> Follow.createFollowRelationship(follower, followee))
 					.thenReturn(follow);
 				staticAddFollowResponse
-					.when(() -> AddFollowResponse.from(follow))
+					.when(() -> AddFollowResponse.of(follow))
 					.thenReturn(addFollowResponse);
 				when(followRepository.save(follow)).thenReturn(follow);
 
@@ -164,5 +163,6 @@ class FollowServiceTest {
 		}
 
 	}
+
 
 }

@@ -8,4 +8,6 @@ public record UnfollowResponse(
 	Long followerId,
 	Long followeeId
 ) {
+
 }
+

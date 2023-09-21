@@ -12,7 +12,7 @@ public record AddFollowResponse(
 	Long followerId,
 	Long followeeId) {
 
-	public static AddFollowResponse from (Follow follow) {
+	public static AddFollowResponse of(Follow follow) {
 
 		return AddFollowResponse.builder()
 			.followerId(follow.getSubject().getId())
