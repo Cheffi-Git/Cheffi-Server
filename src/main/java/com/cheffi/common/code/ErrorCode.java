@@ -49,6 +49,9 @@ public enum ErrorCode {
 	// 태그
 	BAD_AVATAR_TAG_REQUEST(HttpStatus.BAD_REQUEST, "T-001", "아바타 관련 태그 요청이 잘못 됐습니다."),
 
+	// 커서
+	NOT_VALID_CURSOR(HttpStatus.BAD_REQUEST, "Cursor-001", "유효하지 않은 Cursor 값 입니다."),
+
 	//기타
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "I-001", "내부 에러가 발생했습니다."),
 	AVATAR_ALREADY_EXIST(HttpStatus.INTERNAL_SERVER_ERROR, "I-002", "아바타가 이미 존재합니다.");

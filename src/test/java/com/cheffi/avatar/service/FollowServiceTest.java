@@ -3,6 +3,7 @@ package com.cheffi.avatar.service;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockedStatic;
 import org.mockito.Mockito;
@@ -18,10 +20,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.cheffi.avatar.domain.Avatar;
 import com.cheffi.avatar.domain.Follow;
 import com.cheffi.avatar.dto.response.AddFollowResponse;
+import com.cheffi.avatar.dto.response.GetMyFolloweeData;
 import com.cheffi.avatar.dto.response.UnfollowResponse;
 import com.cheffi.avatar.repository.AvatarRepository;
 import com.cheffi.avatar.repository.FollowRepository;
 import com.cheffi.common.config.exception.business.EntityNotFoundException;
+import com.cheffi.common.request.CursorPageable;
+import com.cheffi.common.response.CursorPageResponse;
 
 @ExtendWith(MockitoExtension.class)
 class FollowServiceTest {
@@ -33,8 +38,7 @@ class FollowServiceTest {
 	private FollowRepository followRepository;
 	@Mock
 	private ProfilePhotoService profilePhotoService;
-
-	private AvatarService avatarService;
+	@InjectMocks
 	private FollowService followService;
 
 	@Mock
@@ -43,14 +47,176 @@ class FollowServiceTest {
 	private Avatar followee;
 	@Mock
 	private Follow follow;
+	@Mock
+	CursorPageable cursorPageable;
+	@Mock
+	List<GetMyFolloweeData> getFolloweeData;
+	@Mock
+	CursorPageResponse<List<GetMyFolloweeData>> cursorPageResponse;
+	@Mock
+	private List<Follow> follows;
 
 	private static final long FOLLOWER_ID = 1L;
 	private static final long FOLLOWEE_ID = 2L;
+	private static final long LAST_FOLLOW_ID = 10L;
+	private static final Long INVALID_FOLLOW_ID = -1L;
 
 	@BeforeEach
 	void setUp() {
-		avatarService = new AvatarService(avatarRepository, profilePhotoService);
+
+		AvatarService avatarService = new AvatarService(avatarRepository, profilePhotoService);
 		followService = new FollowService(followRepository, avatarService);
+	}
+
+	@Nested
+	@DisplayName("getFollowee 메서드")
+	class getFollowee {
+
+		@Test
+		@DisplayName("success - 팔로우중인 회원 1명이상 조회되었으며 커서의 다음 값이 존재하는 경우")
+		void successGetFollowee_case1() {
+			try (MockedStatic<CursorPageResponse> staticCursorPageResponse = Mockito.mockStatic(CursorPageResponse.class);
+				 MockedStatic<GetMyFolloweeData> staticGetFollowData = Mockito.mockStatic(GetMyFolloweeData.class)) {
+
+				final int FOLLOWS_SIZE = 2;
+				final String ENCODED_CURSOR_VALUE = "ENCODED STRING";
+
+				when(avatarRepository.existsById(FOLLOWER_ID))
+					.thenReturn(true);
+				when(followRepository.getFollows(FOLLOWER_ID, cursorPageable))
+					.thenReturn(follows);
+				when(follows.get(follows.size() - 1))
+					.thenReturn(follow);
+				when(follow.getId())
+					.thenReturn(LAST_FOLLOW_ID);
+				when(followRepository.existsFollowsAfterId(LAST_FOLLOW_ID))
+					.thenReturn(true);
+				when(cursorPageable.getEncodedCursor(LAST_FOLLOW_ID, true))
+					.thenReturn(ENCODED_CURSOR_VALUE);
+
+				staticGetFollowData
+					.when(() -> GetMyFolloweeData.mapFollowsToData(follows))
+					.thenReturn(getFolloweeData);
+				staticCursorPageResponse
+					.when(() -> CursorPageResponse.success(getFolloweeData, ENCODED_CURSOR_VALUE))
+					.thenReturn(cursorPageResponse);
+
+				when(cursorPageResponse.getNextPageCursor())
+					.thenReturn(ENCODED_CURSOR_VALUE);
+				when(cursorPageResponse.getData())
+					.thenReturn(getFolloweeData);
+				when(getFolloweeData.size())
+					.thenReturn(FOLLOWS_SIZE);
+
+				CursorPageResponse<List<GetMyFolloweeData>> response =
+					followService.getFollowee(FOLLOWER_ID, cursorPageable);
+
+				assertNotNull(response);
+				assertEquals(FOLLOWS_SIZE, response.getData().size());
+				assertEquals(ENCODED_CURSOR_VALUE, response.getNextPageCursor());
+
+			}
+
+		}
+
+		@Test
+		@DisplayName("success - 팔로우중인 회원 1명이상 조회되었으며 커서의 다음 값이 존재하지 않는 경우")
+		void successGetFollowee_case2() {
+			try (MockedStatic<CursorPageResponse> staticCursorPageResponse = Mockito.mockStatic(CursorPageResponse.class);
+				 MockedStatic<GetMyFolloweeData> staticGetFollowResponse = Mockito.mockStatic(GetMyFolloweeData.class)) {
+
+				final int FOLLOWS_SIZE = 2;
+				final String RETURN_CURSOR_VALUE = "";
+
+				when(avatarRepository.existsById(FOLLOWER_ID))
+					.thenReturn(true);
+				when(followRepository.getFollows(FOLLOWER_ID, cursorPageable))
+					.thenReturn(follows);
+				when(follows.get(follows.size() - 1))
+					.thenReturn(follow);
+				when(follow.getId())
+					.thenReturn(LAST_FOLLOW_ID);
+				when(followRepository.existsFollowsAfterId(LAST_FOLLOW_ID))
+					.thenReturn(false);
+				when(cursorPageable.getEncodedCursor(LAST_FOLLOW_ID, false))
+					.thenReturn(RETURN_CURSOR_VALUE);
+
+				staticGetFollowResponse
+					.when(() -> GetMyFolloweeData.mapFollowsToData(follows))
+					.thenReturn(getFolloweeData);
+				staticCursorPageResponse
+					.when(() -> CursorPageResponse.success(getFolloweeData, RETURN_CURSOR_VALUE))
+					.thenReturn(cursorPageResponse);
+
+				when(cursorPageResponse.getNextPageCursor())
+					.thenReturn(RETURN_CURSOR_VALUE);
+				when(cursorPageResponse.getData())
+					.thenReturn(getFolloweeData);
+				when(getFolloweeData.size())
+					.thenReturn(FOLLOWS_SIZE);
+
+				CursorPageResponse<List<GetMyFolloweeData>> response =
+					followService.getFollowee(FOLLOWER_ID, cursorPageable);
+
+				assertNotNull(response);
+				assertEquals(FOLLOWS_SIZE, response.getData().size());
+				assertEquals("", response.getNextPageCursor());
+
+			}
+
+		}
+
+		@Test
+		@DisplayName("success - 팔로우중인 회원 0명인 경우")
+		void successGetFollowee_case3() {
+
+			try (MockedStatic<CursorPageResponse> staticCursorPageResponse = Mockito.mockStatic(CursorPageResponse.class);
+				 MockedStatic<GetMyFolloweeData> staticGetFollowResponse = Mockito.mockStatic(GetMyFolloweeData.class)) {
+
+				final int FOLLOWS_SIZE = 0;
+				final String RETURN_CURSOR_VALUE = "";
+
+				when(avatarRepository.existsById(FOLLOWER_ID))
+					.thenReturn(true);
+				when(followRepository.getFollows(FOLLOWER_ID, cursorPageable))
+					.thenReturn(follows);
+				when(follows.isEmpty())
+					.thenReturn(true);
+
+				staticGetFollowResponse
+					.when(() -> GetMyFolloweeData.mapFollowsToData(follows))
+					.thenReturn(getFolloweeData);
+				staticCursorPageResponse
+					.when(() -> CursorPageResponse.success(getFolloweeData, RETURN_CURSOR_VALUE))
+					.thenReturn(cursorPageResponse);
+
+				when(cursorPageResponse.getNextPageCursor())
+					.thenReturn(RETURN_CURSOR_VALUE);
+				when(cursorPageResponse.getData())
+					.thenReturn(getFolloweeData);
+				when(getFolloweeData.size())
+					.thenReturn(FOLLOWS_SIZE);
+
+				CursorPageResponse<List<GetMyFolloweeData>> response =
+					followService.getFollowee(FOLLOWER_ID, cursorPageable);
+
+				assertNotNull(response);
+				assertEquals(FOLLOWS_SIZE, response.getData().size());
+				assertEquals("", response.getNextPageCursor());
+
+			}
+		}
+
+		@Test
+		@DisplayName("fail - 존재하지 않는 아바타로 팔로잉 목록 조회 시도")
+		void fail_getFollowee_AVATAR_NOT_EXISTS() {
+
+			when(avatarRepository.findById(FOLLOWER_ID)).thenReturn(Optional.empty());
+
+			assertThrows(EntityNotFoundException.class, () -> {
+				followService.addFollow(FOLLOWER_ID, FOLLOWEE_ID);
+			});
+		}
 	}
 
 
