@@ -235,7 +235,7 @@ class FollowServiceTest {
 				when(avatarRepository.findById(FOLLOWER_ID)).thenReturn(Optional.of(follower));
 				when(avatarRepository.findById(FOLLOWEE_ID)).thenReturn(Optional.of(followee));
 				when(followRepository
-					.existsBySubjectAndTarget(followee, follower))
+					.existsBySubjectAndTarget(follower, followee))
 					.thenReturn(false);
 				staticFollow
 					.when(() -> Follow.createFollowRelationship(follower, followee))
