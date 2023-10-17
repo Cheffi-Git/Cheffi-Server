@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -50,7 +49,7 @@ class RestaurantServiceTest {
 			when(restaurantRepository.findByNameContaining(KEYWORD_WITHOUT_SPACES, pageable))
 				.thenReturn(resultWithNoSpaces);
 
-			when(resultWithNoSpaces.map(Mockito.<Function>any())).thenReturn(dtoWithNoSpaces);
+			when(resultWithNoSpaces.map(any(Function.class))).thenReturn(dtoWithNoSpaces);
 
 			//when
 			Page<RestaurantInfoDto> page = restaurantService.searchRestaurantByName(KEYWORD_WITH_SPACES, pageable);

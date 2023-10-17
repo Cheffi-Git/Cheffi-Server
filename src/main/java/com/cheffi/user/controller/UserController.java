@@ -1,5 +1,7 @@
 package com.cheffi.user.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -59,9 +61,10 @@ public class UserController {
 			+ "닉네임 설정, 프로필 사진 등록, 태그 설정이 끝난 후에 반드시 1회 호출하여 완료 등록을 해야 합니다.",
 		security = {@SecurityRequirement(name = "session-token")})
 	@PostMapping("/profile")
-	public ApiResponse<String> completeProfileRegistration(
+	public ApiResponse<List<String>> completeProfileRegistration(
 		@AuthenticationPrincipal UserPrincipal principal) {
-		return ApiResponse.success(profileService.completeProfile(principal.getUserId(), principal.getAvatarId()));
+		return ApiResponse.success(
+			profileService.completeProfile(principal.getUserId(), principal.getAvatarId()).authorities());
 	}
 
 }

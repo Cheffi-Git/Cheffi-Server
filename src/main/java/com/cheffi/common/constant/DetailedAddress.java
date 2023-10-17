@@ -19,21 +19,31 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class DetailedAddress extends Address {
 
-	@Schema(description = "식당 상세주소", example = "숭문길 24")
+	@Schema(description = "지번 주소", example = "염리동 111")
 	@NotNull
-	private String detail;
+	private String lotNumber;
+	@Schema(description = "도로명 주소", example = "숭문길 24")
+	@NotNull
+	private String roadName;
 
-	private DetailedAddress(String province, String city, String detail) {
+	public DetailedAddress(String province, String city, String lotNumber, String roadName) {
 		super(province, city);
-		this.detail = detail;
+		this.lotNumber = lotNumber;
+		this.roadName = roadName;
 	}
 
-	public static DetailedAddress of(String province, String city, String detail) {
-		return new DetailedAddress(province, city, detail);
+	public static DetailedAddress of(String province, String city, String lotNumber, String roadName) {
+		return new DetailedAddress(province, city, lotNumber, roadName);
 	}
 
-	@Schema(description = "식당 전체 주소", example = "서울시 마포구 숭문길 24")
-	public String getFull() {
-		return getProvince() + " " + getCity() + " " + getDetail();
+	@Schema(description = "식당 전체 지번 주소", example = "서울시 마포구 염리동 111")
+	public String getFullLotNumberAddress() {
+		return getProvince() + " " + getCity() + " " + getLotNumber();
 	}
+
+	@Schema(description = "식당 전체 도로명 주소", example = "서울시 마포구 숭문길 24")
+	public String getFullRodNameAddress() {
+		return getProvince() + " " + getCity() + " " + getRoadName();
+	}
+
 }

@@ -9,17 +9,29 @@ class DetailedAddressTest {
 
 	private static final String PROVINCE = "서울시";
 	private static final String CITY = "마포구";
-	private static final String DETAIL = "숭문길 24";
-	private static final String FULL_ADDRESS = PROVINCE + " " + CITY + " " + DETAIL;
+	private static final String LOT_NUMBER = "숭문길 24";
+	private static final String ROAD_NAME = "염리동 111";
+	private static final String FULL_LOT_NUMBER_ADDRESS = PROVINCE + " " + CITY + " " + LOT_NUMBER;
+	private static final String FULL_ROAD_NAME_ADDRESS = PROVINCE + " " + CITY + " " + ROAD_NAME;
 
 	@Test
-	@DisplayName("DetailedAddress 객체로 getFull 메서드를 호출하면 주소를 하나로 합쳐 String 타입으로 반환한다.")
-	void givenDetailedAddressWhenGetFullThenReturnFullStringOfAddress() {
+	@DisplayName("getFullLotNumberAddress 메서드를 호출하면 지번주소 전체를 반환한다.")
+	void givenDetailedAddressWhenGetFullLotNumberAddress() {
 		//when
-		DetailedAddress address = DetailedAddress.of(PROVINCE, CITY, DETAIL);
+		DetailedAddress address = new DetailedAddress(PROVINCE, CITY, LOT_NUMBER, ROAD_NAME);
 
 		//then
-		assertThat(address.getFull()).isEqualTo(FULL_ADDRESS);
+		assertThat(address.getFullLotNumberAddress()).isEqualTo(FULL_LOT_NUMBER_ADDRESS);
+	}
+
+	@Test
+	@DisplayName("getFullRodNameAddress 메서드를 호출하면 도로명 주소 전체를 반환한다.")
+	void givenDetailedAddressWhenGetFullRoadNameAddress() {
+		//when
+		DetailedAddress address = new DetailedAddress(PROVINCE, CITY, LOT_NUMBER, ROAD_NAME);
+
+		//then
+		assertThat(address.getFullRodNameAddress()).isEqualTo(FULL_ROAD_NAME_ADDRESS);
 	}
 
 }

@@ -18,6 +18,7 @@ public enum ErrorCode {
 	INVALID_PAYLOAD(HttpStatus.UNAUTHORIZED, "A-005", "페이로드 검증에 실패했습니다."),
 	JWT_VERIFY_FAILED(HttpStatus.UNAUTHORIZED, "A-006", "JWT 시그니처가 올바르지 않습니다."),
 	NOT_ACCESS_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "A-007", "해당 토큰은 ACCESS TOKEN이 아닙니다."),
+	NOT_AUTHENTICATED(HttpStatus.INTERNAL_SERVER_ERROR, "A-011", "권한이 없습니다."),
 
 	//403 에러
 	FORBIDDEN_ADMIN(HttpStatus.FORBIDDEN, "A-008", "관리자 Role이 아닙니다."),
@@ -26,7 +27,7 @@ public enum ErrorCode {
 	NOT_SUPPORTED_OAUTH_PROVIDER(HttpStatus.BAD_REQUEST, "A-009", "지원하지 않는 OAuth 프로바이더 입니다."),
 
 	// 500 에러
-	EMAIL_LOGIN_NOT_SUPPORTED(HttpStatus.INTERNAL_SERVER_ERROR, "A-009", "UserType 이 LOCAL입니다. (일반 로그인은 지원하지 않습니다.)"),
+	EMAIL_LOGIN_NOT_SUPPORTED(HttpStatus.INTERNAL_SERVER_ERROR, "A-010", "UserType 이 LOCAL입니다. (일반 로그인은 지원하지 않습니다.)"),
 
 	// 회원
 	INVALID_MEMBER_TYPE(HttpStatus.BAD_REQUEST, "M-001", "잘못된 회원 타입입니다. (memberType : KAKAO)"),
@@ -43,6 +44,18 @@ public enum ErrorCode {
 	ALREADY_FOLLOWED(HttpStatus.BAD_REQUEST, "FW-001", "해당 아바타는 이미 팔로우 중입니다."),
 	NOT_FOLLOWED(HttpStatus.BAD_REQUEST, "FW-002", "해당 아바타는 팔로우 상태가 아닙니다."),
 
+	// 식당, 리뷰
+	RESTAURANT_NOT_EXIST(HttpStatus.BAD_REQUEST, "R-001", "식별자에 해당하는 식당이 없습니다."),
+	TOO_MANY_MENUS(HttpStatus.BAD_REQUEST, "R-002", "한 리뷰의 메뉴는 5개를 초과할 수 없습니다."),
+	RESTAURANT_DATA_NOT_EXIST(HttpStatus.BAD_REQUEST, "R-003", "공공 데이터에 "
+		+ "식별자에 해당하는 식당 데이터가 없습니다."),
+	RESTAURANT_ALREADY_REGISTERED(HttpStatus.BAD_REQUEST, "R-003", "해당 데이터로 생성된 식당이 이미 존재합니다."),
+	REVIEW_NOT_EXIST(HttpStatus.BAD_REQUEST, "R-004", "해당 식별자는 올바른 리뷰의 식별자가 아닙니다."),
+	REVIEW_NOT_UNLOCKED(HttpStatus.BAD_REQUEST, "R-005", "유저가 해당 리뷰를 구매하지 않았습니다."),
+	REVIEW_ALREADY_UNLOCKED(HttpStatus.BAD_REQUEST, "R-006", "유저가 해당 리뷰를 이미 구매했습니다."),
+	ALREADY_BOOKMARKED(HttpStatus.BAD_REQUEST, "R-007", "유저가 해당 리뷰를 이미 북마크했습니다."),
+	NOT_BOOKMARKED(HttpStatus.BAD_REQUEST, "R-008", "유저가 해당 리뷰를 북마크 하지 않았습니다."),
+
 	// 파일
 	NOT_IMAGE_FILE(HttpStatus.BAD_REQUEST, "F-001", "전송된 파일의 형식이 이미지가 아닙니다."),
 
@@ -51,6 +64,8 @@ public enum ErrorCode {
 
 	// 커서
 	NOT_VALID_CURSOR(HttpStatus.BAD_REQUEST, "Cursor-001", "유효하지 않은 Cursor 값 입니다."),
+	// 쉐피코인
+	NOT_ENOUGH_CHEFFI_COIN(HttpStatus.BAD_REQUEST, "C-001", "쉐피코인이 부족합니다."),
 
 	//기타
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "I-001", "내부 에러가 발생했습니다."),

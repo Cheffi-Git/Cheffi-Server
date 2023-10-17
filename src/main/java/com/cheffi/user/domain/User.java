@@ -1,5 +1,6 @@
 package com.cheffi.user.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class User extends BaseTimeEntity {
 	private boolean analysisAgreed;
 	@Embedded
 	private Password password;
+	private LocalDate lastLoginDate;
 	private String fcmToken;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -116,5 +118,24 @@ public class User extends BaseTimeEntity {
 	public void changeTermsAgreement(boolean adAgreed, boolean analysisAgreed) {
 		this.adAgreed = adAgreed;
 		this.analysisAgreed = analysisAgreed;
+	}
+
+	public List<Role> getRoles() {
+		return this.getUserRoles().stream().map(UserRole::getRole).toList();
+	}
+
+	public boolean hasLoggedInToday() {
+		return this.lastLoginDate.equals(LocalDate.now());
+	}
+
+	public void updateLastLoginDate() {
+		this.lastLoginDate = LocalDate.now();
+	}
+
+	/**
+	 * 테스트용 메서드
+	 */
+	void setLastLoginDate(LocalDate lastLoginDate) {
+		this.lastLoginDate = lastLoginDate;
 	}
 }

@@ -1,19 +1,32 @@
 package com.cheffi.review.dto;
 
+import com.cheffi.review.constant.RatingType;
+import com.cheffi.review.domain.Rating;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
 @Getter
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class RatingInfoDto {
+	@Schema(description = "평가 타입", example = "GOOD")
+	private final RatingType ratingType;
+	@Schema(description = "평가 여부", example = "true")
+	private final boolean rated;
 
-    @Schema(description = "평가 타입", example = "GOOD")
-    private String ratingType;
-    @Schema(description = "해당 타입의 총합 점수", example = "30")
-    private int totalScore;
+	private RatingInfoDto(RatingType ratingType, boolean rated) {
+		this.ratingType = ratingType;
+		this.rated = rated;
+	}
 
-    public RatingInfoDto(String ratingType, int totalScore) {
-        this.ratingType = ratingType;
-        this.totalScore = totalScore;
-    }
+	public static RatingInfoDto of(Rating rating) {
+		return new RatingInfoDto(rating.getRatingType(), true);
+	}
+
+	public static RatingInfoDto notRated() {
+		return new RatingInfoDto(null, false);
+	}
 
 }

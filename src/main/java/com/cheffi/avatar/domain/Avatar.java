@@ -104,4 +104,10 @@ public class Avatar extends BaseTimeEntity {
 	public boolean hasTags() {
 		return !avatarTags.isEmpty();
 	}
+
+	void applyCheffiCoinBy(int value) {
+		if(cheffiCoinCnt + value < 0)
+			throw new BusinessException(ErrorCode.NOT_ENOUGH_CHEFFI_COIN);
+		this.cheffiCoinCnt += value;
+	}
 }

@@ -15,7 +15,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,28 +23,31 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Rating extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private RatingType ratingType;
+	@NotNull
+	@Enumerated(EnumType.STRING)
+	private RatingType ratingType;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
-    private Review review;
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "review_id")
+	private Review review;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "avatar_id")
-    private Avatar avatar;
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "avatar_id")
+	private Avatar avatar;
 
-    @Builder
-    public Rating(RatingType ratingType, Review review, Avatar avatar) {
-        this.ratingType = ratingType;
-        this.review = review;
-        this.avatar = avatar;
-    }
+	private Rating(Avatar avatar, Review review, RatingType ratingType) {
+		this.ratingType = ratingType;
+		this.review = review;
+		this.avatar = avatar;
+	}
+
+	public static Rating of(Avatar avatar, Review review, RatingType ratingType) {
+		return new Rating(avatar, review, ratingType);
+	}
 }

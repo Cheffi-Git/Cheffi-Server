@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cheffi.avatar.domain.Avatar;
 import com.cheffi.avatar.service.AvatarService;
+import com.cheffi.avatar.service.CheffiCoinService;
 import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.AuthenticationException;
 import com.cheffi.common.service.SecurityContextService;
@@ -35,6 +36,7 @@ public class OAuthService {
 	private final RoleService roleService;
 	private final SecurityContextService securityContextService;
 	private final Map<String, OidcLoginApiService> providerMap;
+	private final CheffiCoinService cheffiCoinService;
 
 	@Transactional
 	public OidcLoginResponse oidcLogin(OidcLoginRequest loginRequest, String provider) {
@@ -53,13 +55,17 @@ public class OAuthService {
 		User user = optionalUser.orElseGet(() -> signUp(oAuthAttributes));
 
 		Avatar avatar = avatarService.getByUserWithPhoto(user);
+		if (isNewUser || !user.hasLoggedInToday()) {
+			user.updateLastLoginDate();
+			cheffiCoinService.earnCheffiCoinForLogin(avatar.getId());
+		}
 
 		Set<GrantedAuthority> authorities = getAuthoritiesFromUser(user);
 		AuthenticationToken authenticationToken =
 			AuthenticationToken.of(user, avatar, loginRequest.token(), authorities);
 
 		securityContextService.saveToSecurityContext(authenticationToken);
-		return OidcLoginResponse.of(authenticationToken, avatar.getPhoto(), isNewUser);
+		return OidcLoginResponse.of(authenticationToken, avatar, avatar.getPhoto(), isNewUser);
 	}
 
 	private User signUp(OAuthAttributes oAuthAttributes) {

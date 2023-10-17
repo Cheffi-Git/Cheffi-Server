@@ -112,7 +112,7 @@ class AvatarTest {
 
 		@Nested
 		@DisplayName("addTags 메서드")
-		class AddRemoveTags {
+		class AddTags {
 			@Test
 			@DisplayName("중복된 태그 요청에 대해 AvatarTag 는 한 번만 추가된다.")
 			void givenDuplicated() {

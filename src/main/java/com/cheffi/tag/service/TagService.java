@@ -33,4 +33,12 @@ public class TagService {
 			.toList();
 	}
 
+	public List<Tag> getAvatarTagByAvatarId(Long avatarId) {
+		return tagRepository.findByAvatarId(avatarId);
+	}
+
+	public List<Tag> getReviewTagByReviewId(Long reviewId) {
+		return tagRepository.findByReviewId(reviewId);
+	}
+
 }

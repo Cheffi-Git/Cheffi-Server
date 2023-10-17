@@ -36,13 +36,13 @@ public class SecurityContextService {
 		securityContextRepository.saveContext(context, getRequest(), getResponse());
 	}
 
-	public void updatePrincipal(Object principal) {
+	public void updatePrincipal(UserPrincipal principal) {
 		SecurityContext context = getContext();
 		Authentication authentication = context.getAuthentication();
 
 		PreAuthenticatedAuthenticationToken token =
 			new PreAuthenticatedAuthenticationToken(principal, authentication.getCredentials(),
-				authentication.getAuthorities());
+				principal.getAuthorities());
 		context.setAuthentication(token);
 
 		securityContextRepository.saveContext(context, getRequest(), getResponse());
