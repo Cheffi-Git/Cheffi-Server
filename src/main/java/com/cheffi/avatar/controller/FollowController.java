@@ -8,14 +8,17 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cheffi.avatar.dto.response.AddFollowResponse;
-import com.cheffi.avatar.dto.response.GetFollowResponse;
+import com.cheffi.avatar.dto.response.GetMyFolloweeData;
 import com.cheffi.avatar.dto.response.RecommendFollowResponse;
 import com.cheffi.avatar.dto.response.UnfollowResponse;
 import com.cheffi.avatar.service.FollowService;
+import com.cheffi.common.request.CursorPageable;
 import com.cheffi.common.response.ApiResponse;
+import com.cheffi.common.response.CursorPageResponse;
 import com.cheffi.oauth.model.UserPrincipal;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -62,8 +65,13 @@ public class FollowController {
 		security = {@SecurityRequirement(name = "session-token")})
 	@PreAuthorize("hasRole('USER')")
 	@GetMapping
-	public ApiResponse<List<GetFollowResponse>> getMyFollowee() {
-		return ApiResponse.success(followService.getFollowee(1L));
+	public CursorPageResponse<List<GetMyFolloweeData>> getMyFollowee(
+		@AuthenticationPrincipal UserPrincipal principal,
+		@RequestParam(name = "size", defaultValue = "5") int size,
+		@RequestParam(name = "next_page_cursor", required = false) String nextPageCursor) {
+
+		return followService.getFollowee
+			(principal.getAvatarId(), new CursorPageable(size, nextPageCursor));
 	}
 
 	@Tag(name = "Follow")
