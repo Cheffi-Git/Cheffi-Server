@@ -32,7 +32,7 @@ public class FollowService {
 		Avatar follower = avatarService.getById(followerId);
 		Avatar followee = avatarService.getById(followeeId);
 
-		if (followRepository.existsBySubjectAndTarget(followee, follower)) {
+		if (followRepository.existsBySubjectAndTarget(follower, followee)) {
 			throw new BusinessException(ErrorCode.ALREADY_FOLLOWED);
 		}
 

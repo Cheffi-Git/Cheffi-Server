@@ -43,3 +43,6 @@ application-dev-db.yml
 
 ### QueryDSL ###
 **/src/main/generated
+
+### database initialization file ###
+src/main/resources/db/data.sql
