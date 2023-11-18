@@ -45,4 +45,14 @@ public class ReviewTrendingService {
 		reviewRedisRepository.addZSet(key, info, SearchConstant.TRENDING_UPDATE_CYCLE);
 		return reviewRedisRepository.getTypedTupleList(key, size, offset);
 	}
+
+	public List<ReviewTypedTuple> getTrendingReviewTupleTest(AreaSearchRequest request) {
+		Integer offset = request.getCursor().intValue();
+		Integer end = offset + request.getSize();
+		ExactPeriod ep = reviewSearchPeriodStrategy.getTrendingSearchPeriod(LocalDateTime.now());
+		var info = reviewRankingService.calculateRanking(request.getAddress(), ep.getStart(), ep.getEnd());
+		if (info.isEmpty())
+			return List.of();
+		return info.stream().map(ReviewTypedTuple::of).sorted().toList().subList(offset, end);
+	}
 }

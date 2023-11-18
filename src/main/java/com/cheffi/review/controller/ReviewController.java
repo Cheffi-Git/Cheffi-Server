@@ -68,6 +68,19 @@ public class ReviewController {
 	}
 
 	@Tag(name = "Review")
+	@Operation(summary = "지역별 맛집 조회 API",
+		description = "1. 미 인증시 bookmarked 필드는 모두 false 입니다.")
+	@GetMapping("/areas/test")
+	public ApiCursorPageResponse<ReviewInfoDto, Integer> searchReviewsByAreaTest(
+		@ParameterObject @Valid AreaSearchRequest request,
+		@AuthenticationPrincipal UserPrincipal principal) {
+		if (securityContextService.hasUserAuthority(principal))
+			return ApiCursorPageResponse.success(
+				reviewSearchService.searchReviewsByArea(request, principal.getAvatarId()));
+		return ApiCursorPageResponse.success(reviewSearchService.searchReviewsByAreaTest(request));
+	}
+
+	@Tag(name = "Review")
 	@Operation(summary = "리뷰 등록 API - 인증 필요",
 		description = "인증 필요, "
 			+ "1. 사진의 순서는 클라이언트에서 보낸 순서대로 등록됩니다."

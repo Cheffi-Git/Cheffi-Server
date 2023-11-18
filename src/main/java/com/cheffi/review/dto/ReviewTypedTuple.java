@@ -45,6 +45,8 @@ public class ReviewTypedTuple implements ZSetOperations.TypedTuple<Object> {
 	public static ReviewTypedTuple of(ZSetOperations.TypedTuple<Object> tuple) {
 		if (tuple.getValue() instanceof Integer integer)
 			return new ReviewTypedTuple(integer.longValue(), tuple.getScore());
+		if (tuple.getValue() instanceof Long value)
+			return new ReviewTypedTuple(value, tuple.getScore());
 		throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
 	}
 

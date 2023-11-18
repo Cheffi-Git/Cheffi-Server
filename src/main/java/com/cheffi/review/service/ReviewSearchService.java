@@ -82,5 +82,21 @@ public class ReviewSearchService {
 			.map(ReviewTypedTuple::getReviewId)
 			.toList();
 	}
+
+	public CursorPage<ReviewInfoDto, Integer> searchReviewsByAreaTest(AreaSearchRequest request) {
+		if (!regionService.contains(request.getAddress()))
+			throw new BusinessException(ErrorCode.ADDRESS_NOT_EXIST);
+		List<ReviewInfoDto> reviewDtos = reviewService.getAllById(getTrendingReviewIndexTest(request),
+			request.getCursor());
+		return CursorPage.of(reviewDtos, request.getSize(), ReviewInfoDto::getNumber);
+	}
+
+	private List<Long> getTrendingReviewIndexTest(AreaSearchRequest request) {
+		return reviewTrendingService.getTrendingReviewTupleTest(request)
+			.stream()
+			.map(ReviewTypedTuple::getReviewId)
+			.toList();
+	}
+
 }
 
