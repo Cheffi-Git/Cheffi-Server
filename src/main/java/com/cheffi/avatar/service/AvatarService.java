@@ -86,6 +86,10 @@ public class AvatarService {
 			.orElseThrow(() -> new EntityNotFoundException(ErrorCode.AVATAR_NOT_EXISTS));
 	}
 
+	public boolean existById(Long avatarId) {
+		return avatarRepository.existsById(avatarId);
+	}
+
 	public Avatar getByUserWithPhoto(User user) {
 		return avatarRepository.findByUserWithPhoto(user)
 			.orElseThrow(() -> new EntityNotFoundException(ErrorCode.AVATAR_NOT_EXISTS));

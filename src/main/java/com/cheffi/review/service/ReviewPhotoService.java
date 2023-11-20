@@ -15,7 +15,9 @@ import com.cheffi.review.domain.Review;
 import com.cheffi.review.domain.ReviewPhoto;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
@@ -43,5 +45,26 @@ public class ReviewPhotoService {
 		}
 
 		return reviewPhotos;
+	}
+
+	@Transactional
+	public void deletePhotos(List<ReviewPhoto> photos) {
+		try {
+			for (var photo : photos) {
+				fileUploadService.removeFromS3(photo.getS3Key());
+			}
+		} catch (Exception e) {
+			log.error("Exception occurred in deletePhotos method: {}", e.getMessage());
+		}
+	}
+
+	@Transactional
+	public List<ReviewPhoto> changePhotos(Review review, List<MultipartFile> images) {
+		List<ReviewPhoto> photosToDelete = review.getPhotos();
+		review.getPhotos().clear();
+		List<ReviewPhoto> result = addPhotos(review, images);
+		deletePhotos(photosToDelete);
+
+		return result;
 	}
 }

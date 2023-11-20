@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import com.cheffi.oauth.model.UserPrincipal;
 import com.cheffi.review.dto.ReviewInfoDto;
 import com.cheffi.review.dto.request.AreaSearchRequest;
 import com.cheffi.review.dto.request.RegisterReviewRequest;
+import com.cheffi.review.dto.request.UpdateReviewRequest;
 import com.cheffi.review.dto.response.GetReviewResponse;
 import com.cheffi.review.service.ReviewCudService;
 import com.cheffi.review.service.ReviewSearchService;
@@ -83,6 +85,21 @@ public class ReviewController {
 		@Parameter(description = "작성할 리뷰의 사진 파일")
 		@RequestPart("images") @Size(min = 3, max = 10) List<MultipartFile> images) {
 		return ApiResponse.success(reviewCudService.registerReview(userPrincipal.getAvatarId(), request, images));
+	}
+
+	@Tag(name = "Review")
+	@Operation(summary = "리뷰 수정 API - 인증 필요",
+		description = "인증 필요, "
+			+ "content-type : multipart/form-data 형태로 아래의 형식에 맞춰서 보내면 정상적으로 작동합니다.",
+		security = {@SecurityRequirement(name = "session-token")})
+	@PreAuthorize("hasRole('USER') and !hasAuthority('NO_PROFILE')")
+	@PatchMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+	public ApiResponse<Long> updateReview(
+		@AuthenticationPrincipal UserPrincipal userPrincipal,
+		@RequestPart("request") @Valid UpdateReviewRequest request,
+		@Parameter(description = "작성할 리뷰의 사진 파일")
+		@RequestPart("images") @Size(min = 3, max = 10) List<MultipartFile> images) {
+		return ApiResponse.success(reviewCudService.updateReview(userPrincipal.getAvatarId(), request, images));
 	}
 
 }
