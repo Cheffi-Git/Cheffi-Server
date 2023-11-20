@@ -97,7 +97,7 @@ public class ReviewController {
 	public ApiResponse<Long> updateReview(
 		@AuthenticationPrincipal UserPrincipal userPrincipal,
 		@RequestPart("request") @Valid UpdateReviewRequest request,
-		@Parameter(description = "작성할 리뷰의 사진 파일")
+		@Parameter(description = "수정할 리뷰의 사진 파일")
 		@RequestPart("images") @Size(min = 3, max = 10) List<MultipartFile> images) {
 		return ApiResponse.success(reviewCudService.updateReview(userPrincipal.getAvatarId(), request, images));
 	}

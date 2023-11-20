@@ -56,9 +56,8 @@ public class ReviewCudService {
 			throw new BusinessException(ErrorCode.AVATAR_NOT_EXISTS);
 		Review review = reviewRepository.findById(request.getReviewId())
 			.orElseThrow(() -> new EntityNotFoundException(ErrorCode.REVIEW_NOT_EXIST));
-		if (review.getWriter().getId() != authorId) {
+		if (review.getWriter().getId() != authorId)
 			throw new BusinessException(ErrorCode.NOT_REVIEW_WRITER);
-		}
 
 		menuService.changeMenus(review, request.getMenus());
 		reviewTagService.changeTags(review, request.getTag());
@@ -66,5 +65,4 @@ public class ReviewCudService {
 
 		return reviewRepository.save(review).getId();
 	}
-
 }

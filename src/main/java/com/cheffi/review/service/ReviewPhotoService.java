@@ -49,12 +49,14 @@ public class ReviewPhotoService {
 
 	@Transactional
 	public void deletePhotos(List<ReviewPhoto> photos) {
+		String s3Key = null;
 		try {
 			for (var photo : photos) {
-				fileUploadService.removeFromS3(photo.getS3Key());
+				s3Key = photo.getS3Key();
+				fileUploadService.removeFromS3(s3Key);
 			}
 		} catch (Exception e) {
-			log.error("Exception occurred in deletePhotos method: {}", e.getMessage());
+			log.error("Exception occurred for photo with s3Key {}", s3Key);
 		}
 	}
 
