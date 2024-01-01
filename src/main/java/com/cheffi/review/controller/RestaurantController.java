@@ -48,9 +48,8 @@ public class RestaurantController {
 	@Tag(name = "Restaurant")
 	@Operation(summary = "식당 등록 신청 API",
 	description = "사용자에 의한 식당 등록 API입니다. "
-		+ "임시적으로 식당이 등록되며 관리자에 의해 최종 등록됩니다."
-		+ "동일한 주소로 공공데이터가 존재하는경우(=검색화면에 나오는 주소인경우) 에러 발생")
-	// @PreAuthorize("hasRole('USER')")
+		+ "임시적으로 식당이 등록되며 관리자에 의해 최종 등록됩니다.")
+	@PreAuthorize("hasRole('USER')")
 	@PostMapping
 	public ApiResponse<Long> registerTempRestaurant(@Valid @RequestBody RegisterRestaurantRequest request) {
 		return ApiResponse.success(restaurantService.registerTempRestaurant(request));

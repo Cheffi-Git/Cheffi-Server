@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.Access;
 import jakarta.persistence.AccessType;
 import jakarta.persistence.Embeddable;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,13 +26,13 @@ public class DetailedAddress extends Address {
 	@JsonIgnore
 	private String lotNumber;
 	@Schema(description = "도로명 주소", example = "숭문길 24")
-	@NotNull
+	@NotBlank
 	private String roadName;
 
 	public DetailedAddress(String province, String city, String lotNumber, String roadName) {
 		super(province, city);
-		this.lotNumber = lotNumber.trim().replaceAll("\\s+", " ");;
-		this.roadName = roadName.trim().replaceAll("\\s+", " ");;
+		this.lotNumber = lotNumber.trim().replaceAll("\\s+", " ");
+		this.roadName = roadName.trim().replaceAll("\\s+", " ");
 	}
 
 	public static DetailedAddress of(String province, String city, String lotNumber, String roadName) {

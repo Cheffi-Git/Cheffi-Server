@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.BusinessException;
 import com.cheffi.common.config.exception.business.EntityNotFoundException;
-import com.cheffi.common.constant.DetailedAddress;
 import com.cheffi.region.service.RegionService;
 import com.cheffi.review.domain.Restaurant;
 import com.cheffi.review.dto.RestaurantInfoDto;
