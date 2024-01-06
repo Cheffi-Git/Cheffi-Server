@@ -1,0 +1,51 @@
+name: 'Copy Secrets'
+description: 'Copy secret information for server'
+inputs:
+  profile:
+    description: 'profile which secret belong to'
+    required: true
+  oauth-secret:
+    description: 'oauth secret file'
+    required: true
+  s3-secret:
+    description: 's3 secret file'
+    required: true
+  dev-db-secret:
+    description: 'development db secret file'
+  prod-db-secret:
+    description: 'production db secret file'
+
+runs:
+  using: "composite"
+  steps:
+  - name: Copy Oauth and S3 key
+    env:
+      OAUTH_SECRET: ${{ inputs.oauth-secret }}
+      OAUTH_SECRET_DIR_FILE_NAME: application-oauth.yml
+      S3_SECRET: ${{ inputs.s3-secret }}
+      S3_SECRET_DIR_FILE_NAME: application-s3.yml
+      SECRET_DIR: src/main/resources
+    shell: bash
+    run: | 
+      echo $OAUTH_SECRET | base64 --decode > $SECRET_DIR/$OAUTH_SECRET_DIR_FILE_NAME
+      echo $S3_SECRET | base64 --decode > $SECRET_DIR/$S3_SECRET_DIR_FILE_NAME
+
+  - name: Copy Dev DB Secrets
+    if: inputs.profile == 'dev'
+    env:
+      DEV_DB_SECRET: ${{ inputs.dev-db-secret }}
+      DEV_DB_DIR_FILE_NAME: application-dev-db.yml
+      SECRET_DIR: src/main/resources
+    shell: bash
+    run: echo $DEV_DB_SECRET | base64 --decode > $SECRET_DIR/$DEV_DB_DIR_FILE_NAME
+
+  - name: Copy Prod DB Secrets
+    if: inputs.profile == 'prod'
+    env:
+      PROD_DB_SECRET: ${{ inputs.prod-db-secret }}
+      PROD_DB_SECRET_DIR: src/main/resources
+      PROD_DB_DIR_FILE_NAME: application-prod-db.yml
+      SECRET_DIR: src/main/resources
+    shell: bash
+    run: echo $PROD_DB_SECRET | base64 --decode > $SECRET_DIR/$PROD_DB_DIR_FILE_NAME
+

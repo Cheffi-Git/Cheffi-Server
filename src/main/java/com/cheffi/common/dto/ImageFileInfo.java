@@ -1,6 +1,10 @@
 package com.cheffi.common.dto;
 
+import org.springframework.util.Assert;
+
 import com.cheffi.avatar.domain.ProfilePhoto;
+import com.cheffi.review.domain.Review;
+import com.cheffi.review.domain.ReviewPhoto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
@@ -51,6 +55,20 @@ public record ImageFileInfo(
 			.width(width)
 			.height(height)
 			.isDefault(false)
+			.build();
+	}
+
+	public ReviewPhoto toReviewPhoto(Review review, Integer order) {
+		Assert.notNull(review, "리뷰사진에 매핑될 리뷰는 null 일 수 없습니다.");
+		Assert.notNull(order, "순서는 null 일 수 없습니다.");
+		return ReviewPhoto.builder()
+			.url(url)
+			.s3Key(S3key)
+			.size(byteSize)
+			.width(width)
+			.height(height)
+			.review(review)
+			.givenOrder(order)
 			.build();
 	}
 

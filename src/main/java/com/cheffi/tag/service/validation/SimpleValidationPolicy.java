@@ -8,8 +8,16 @@ import com.cheffi.tag.constant.TagType;
 import com.cheffi.tag.domain.Tag;
 
 public class SimpleValidationPolicy extends TagValidationPolicy {
+	@Override
 	public void validateTagsOfAvatar(List<Tag> tags, List<Long> foodTagIds, List<Long> tasteTagIds) {
-		checkSize(tags, foodTagIds, tasteTagIds);
+		checkAvatarSize(tags, foodTagIds, tasteTagIds);
+		verifyPresence(tags, foodTagIds, TagType.FOOD);
+		verifyPresence(tags, tasteTagIds, TagType.TASTE);
+	}
+
+	@Override
+	public void validateTagsOfReview(List<Tag> tags, List<Long> foodTagIds, List<Long> tasteTagIds) {
+		checkReviewSize(tags, foodTagIds, tasteTagIds);
 		verifyPresence(tags, foodTagIds, TagType.FOOD);
 		verifyPresence(tags, tasteTagIds, TagType.TASTE);
 	}

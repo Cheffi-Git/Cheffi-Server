@@ -2,6 +2,7 @@ package com.cheffi.common.service;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.context.SecurityContextHolderStrategy;
@@ -13,7 +14,9 @@ import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import com.cheffi.common.auth.Authorities;
 import com.cheffi.oauth.model.UserPrincipal;
+import com.cheffi.user.constant.RoleType;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,13 +39,13 @@ public class SecurityContextService {
 		securityContextRepository.saveContext(context, getRequest(), getResponse());
 	}
 
-	public void updatePrincipal(Object principal) {
+	public void updatePrincipal(UserPrincipal principal) {
 		SecurityContext context = getContext();
 		Authentication authentication = context.getAuthentication();
 
 		PreAuthenticatedAuthenticationToken token =
 			new PreAuthenticatedAuthenticationToken(principal, authentication.getCredentials(),
-				authentication.getAuthorities());
+				principal.getAuthorities());
 		context.setAuthentication(token);
 
 		securityContextRepository.saveContext(context, getRequest(), getResponse());
@@ -70,5 +73,14 @@ public class SecurityContextService {
 
 	public UserPrincipal getUserPrincipal() {
 		return (UserPrincipal)getContext().getAuthentication().getPrincipal();
+	}
+
+	public boolean hasUserAuthority(UserPrincipal principal) {
+		return principal != null && principal.getAuthorities()
+			.contains(new SimpleGrantedAuthority(RoleType.USER.getAuthority()));
+	}
+
+	public Authorities getAuthorities() {
+		return new Authorities(getUserPrincipal().getAuthorities());
 	}
 }

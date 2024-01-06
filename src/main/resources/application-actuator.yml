@@ -15,5 +15,3 @@ management:
         include:
           - prometheus
           - info
-          - logfile
-

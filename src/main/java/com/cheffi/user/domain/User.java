@@ -1,5 +1,6 @@
 package com.cheffi.user.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +21,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -29,7 +29,6 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "users")
 @Entity
 public class User extends BaseTimeEntity {
 
@@ -63,6 +62,7 @@ public class User extends BaseTimeEntity {
 	private boolean analysisAgreed;
 	@Embedded
 	private Password password;
+	private LocalDate lastLoginDate;
 	private String fcmToken;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -118,5 +118,28 @@ public class User extends BaseTimeEntity {
 	public void changeTermsAgreement(boolean adAgreed, boolean analysisAgreed) {
 		this.adAgreed = adAgreed;
 		this.analysisAgreed = analysisAgreed;
+	}
+
+	public List<Role> getRoles() {
+		return this.getUserRoles().stream().map(UserRole::getRole).toList();
+	}
+
+	public boolean hasLoggedInToday() {
+		return this.lastLoginDate.equals(LocalDate.now());
+	}
+
+	public void updateLastLoginDate() {
+		this.lastLoginDate = LocalDate.now();
+	}
+
+	public boolean isUserOf(String provider) {
+		return UserType.from(provider).equals(userType);
+	}
+
+	/**
+	 * 테스트용 메서드
+	 */
+	void setLastLoginDate(LocalDate lastLoginDate) {
+		this.lastLoginDate = lastLoginDate;
 	}
 }

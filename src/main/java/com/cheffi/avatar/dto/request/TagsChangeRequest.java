@@ -13,10 +13,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public record TagsChangeRequest(
 
 	@JsonProperty(value = "food_tags")
-	@Schema(description = "변경할 음식 태그의 식별자 리스트 - 변경을 원하는 최종 상태를 입력해주세요.", example = "[0, 1, 2]")
+	@Schema(description = "변경할 음식 태그의 식별자 리스트 - 변경을 원하는 최종 상태를 3개 이상 입력해주세요.", example = "[1, 2, 3]")
 	List<Long> foodTags,
 	@JsonProperty(value = "taste_tags")
-	@Schema(description = "변경할 취향 태그의 식별자 리스트 - 변경을 원하는 최종 상태를 입력해주세요.", example = "[3, 4]")
+	@Schema(description = "변경할 취향 태그의 식별자 리스트 - 변경을 원하는 최종 상태를 5개 이상 입력해주세요.", example = "[20, 21, 22, 23, 24, 25]")
 	List<Long> tasteTags) {
 
 	public List<Long> combinedList() {

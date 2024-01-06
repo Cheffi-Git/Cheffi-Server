@@ -22,4 +22,8 @@ public class ApiResponse<T> {
 	public static <T> ApiResponse<T> success(T data) {
 		return new ApiResponse<>(data, 200, "success");
 	}
+
+	public static ApiResponse<Void> success() {
+		return new ApiResponse<>(null, 200, "success");
+	}
 }

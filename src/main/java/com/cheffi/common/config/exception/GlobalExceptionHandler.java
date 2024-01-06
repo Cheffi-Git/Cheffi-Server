@@ -1,5 +1,7 @@
 package com.cheffi.common.config.exception;
 
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.cheffi.common.config.exception.business.AuthenticationException;
 import com.cheffi.common.config.exception.business.BusinessException;
+import com.cheffi.common.config.exception.business.DuplicatedEmailException;
 import com.cheffi.common.response.ErrorResponse;
 
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +31,19 @@ public class GlobalExceptionHandler {
 	}
 
 	/**
-	 * 비즈니스 로직 실행 중 오류 발생
+	 * 이메일 중복 오류 발생
+	 */
+	@ExceptionHandler(value = {DuplicatedEmailException.class})
+	protected ResponseEntity<ErrorResponse> handleDuplicatedEmailException(DuplicatedEmailException e) {
+		log.error("DuplicatedEmailException", e);
+		ErrorResponse errorResponse = ErrorResponse.of(e.getErrorCode().getCode(), e.getMessage(),
+			Map.of("provider", e.getProvider()));
+		return ResponseEntity.status(e.getErrorCode().getHttpStatus())
+			.body(errorResponse);
+	}
+
+	/**
+	 * 인증 오류 발생
 	 */
 	@ExceptionHandler(value = {AuthenticationException.class})
 	protected ResponseEntity<ErrorResponse> handleAuthenticationException(AuthenticationException e) {

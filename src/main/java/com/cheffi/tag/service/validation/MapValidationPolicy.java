@@ -11,7 +11,17 @@ import com.cheffi.tag.domain.Tag;
 
 public class MapValidationPolicy extends TagValidationPolicy {
 	public void validateTagsOfAvatar(List<Tag> tags, List<Long> foodTagIds, List<Long> tasteTagIds) {
-		checkSize(tags, foodTagIds, tasteTagIds);
+		checkAvatarSize(tags, foodTagIds, tasteTagIds);
+		Map<Long, Tag> tagMap = tags.stream()
+			.collect(Collectors.toMap(Tag::getId, t -> t));
+
+		verifyPresence(tagMap, foodTagIds, TagType.FOOD);
+		verifyPresence(tagMap, tasteTagIds, TagType.TASTE);
+	}
+
+	@Override
+	public void validateTagsOfReview(List<Tag> tags, List<Long> foodTagIds, List<Long> tasteTagIds) {
+		checkReviewSize(tags, foodTagIds, tasteTagIds);
 		Map<Long, Tag> tagMap = tags.stream()
 			.collect(Collectors.toMap(Tag::getId, t -> t));
 

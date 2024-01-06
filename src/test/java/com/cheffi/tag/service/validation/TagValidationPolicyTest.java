@@ -25,8 +25,8 @@ class TagValidationPolicyTest {
 	private TagValidationPolicy tagValidationPolicy;
 
 	@Nested
-	@DisplayName("checkSize 메서드")
-	class CheckSize {
+	@DisplayName("checkAvatarSize 메서드")
+	class CheckAvatarSize {
 		@Mock
 		private List<Long> foodTagIds;
 
@@ -47,7 +47,7 @@ class TagValidationPolicyTest {
 			//then
 			assertThatNoException().isThrownBy(
 				//when
-				() -> tagValidationPolicy.checkSize(queriedTags, foodTagIds, tasteTagIds)
+				() -> tagValidationPolicy.checkAvatarSize(queriedTags, foodTagIds, tasteTagIds)
 			);
 
 		}
@@ -69,7 +69,7 @@ class TagValidationPolicyTest {
 			assertThatExceptionOfType(BusinessException.class)
 				.isThrownBy(
 					//when
-					() -> tagValidationPolicy.checkSize(queriedTags, foodTagIds, tasteTagIds)
+					() -> tagValidationPolicy.checkAvatarSize(queriedTags, foodTagIds, tasteTagIds)
 				);
 		}
 

@@ -1,5 +1,7 @@
 package com.cheffi.tag.domain;
 
+import java.io.Serializable;
+
 import com.cheffi.tag.constant.TagType;
 
 import jakarta.persistence.Entity;
@@ -16,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Tag {
+public class Tag implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

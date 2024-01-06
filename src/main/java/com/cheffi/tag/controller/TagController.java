@@ -26,7 +26,7 @@ public class TagController {
 
 	private final TagService tagService;
 
-	@Tag(name = "Tags")
+	@Tag(name = "${swagger.tag.tags}")
 	@Operation(summary = "모든 태그 조회 API")
 	@GetMapping
 	public ApiResponse<List<TagDto>> getTagsByType(

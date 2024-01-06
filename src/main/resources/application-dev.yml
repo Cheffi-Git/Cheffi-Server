@@ -4,3 +4,5 @@ spring:
       host: redis
       port: 6379
 
+server:
+  port: 80

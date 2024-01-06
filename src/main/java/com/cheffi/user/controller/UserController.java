@@ -1,5 +1,7 @@
 package com.cheffi.user.controller;
 
+import java.util.List;
+
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -12,7 +14,7 @@ import com.cheffi.common.response.ApiResponse;
 import com.cheffi.oauth.model.UserPrincipal;
 import com.cheffi.user.dto.adapter.UserInfo;
 import com.cheffi.user.dto.request.ChangeTermsAgreementRequest;
-import com.cheffi.user.service.ProfileService;
+import com.cheffi.user.service.SignUpProfileService;
 import com.cheffi.user.service.UserService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,7 +29,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
 
 	private final UserService userService;
-	private final ProfileService profileService;
+	private final SignUpProfileService signUpProfileService;
 
 	@Tag(name = "User")
 	@Operation(summary = "유저 정보 조회 API",
@@ -39,8 +41,8 @@ public class UserController {
 		return ApiResponse.success(userService.getUserInfo(principal.getUserId()));
 	}
 
-	@Tag(name = "SignUp")
-	@Tag(name = "User")
+	@Tag(name = "${swagger.tag.sign-up}")
+	@Tag(name = "${swagger.tag.profile-update}")
 	@Operation(summary = "유저 약관 동의 변경 API",
 		description = "약관 동의 여부 변경 - 인증 필요",
 		security = {@SecurityRequirement(name = "session-token")})
@@ -52,16 +54,17 @@ public class UserController {
 			request.adAgreed(), request.analysisAgreed()));
 	}
 
-	@Tag(name = "SignUp")
-	@Tag(name = "User")
+	@Tag(name = "${swagger.tag.sign-up}")
+	@Tag(name = "${swagger.tag.profile-update}")
 	@Operation(summary = "유저 프로필 완료 등록 API",
 		description = "프로필 완료 등록 - 인증 필요 "
 			+ "닉네임 설정, 프로필 사진 등록, 태그 설정이 끝난 후에 반드시 1회 호출하여 완료 등록을 해야 합니다.",
 		security = {@SecurityRequirement(name = "session-token")})
 	@PostMapping("/profile")
-	public ApiResponse<String> completeProfileRegistration(
+	public ApiResponse<List<String>> completeProfileRegistration(
 		@AuthenticationPrincipal UserPrincipal principal) {
-		return ApiResponse.success(profileService.completeProfile(principal.getUserId(), principal.getAvatarId()));
+		return ApiResponse.success(
+			signUpProfileService.completeProfile(principal.getUserId(), principal.getAvatarId()).authorities());
 	}
 
 }

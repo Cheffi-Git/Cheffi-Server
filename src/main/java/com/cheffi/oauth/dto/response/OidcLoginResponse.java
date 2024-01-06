@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.cheffi.avatar.domain.Avatar;
 import com.cheffi.avatar.domain.ProfilePhoto;
 import com.cheffi.oauth.model.AuthenticationToken;
 import com.cheffi.oauth.model.UserPrincipal;
@@ -32,7 +33,7 @@ public record OidcLoginResponse(
 	boolean activated,
 	@Schema(description = "마지막 비밀번호 변경 일자")
 	LocalDateTime lastPwChangedDate,
-	@Schema(description = "사용자 이름", name = "안유진")
+	@Schema(description = "사용자 이름", example = "안유진")
 	String name,
 	@Schema(description = "유저 가입 유형", example = "KAKAO")
 	UserType userType,
@@ -41,7 +42,11 @@ public record OidcLoginResponse(
 	@Schema(description = "개인정보 사용 동의 여부")
 	boolean analysisAgreed,
 	@Schema(description = "아바타 식별자 (아바타 = 유저 개념)")
-	Long avatarId,
+	Long id,
+	@Schema(description = "현재 쉐피 코인 개수")
+	int cheffiCoinCount,
+	@Schema(description = "현재 포인트 양")
+	int pointCnt,
 	@Schema(description = "유저 닉네임")
 	String nickname,
 	@Schema(description = "프로필 URL")
@@ -50,12 +55,11 @@ public record OidcLoginResponse(
 	boolean profileCompleted,
 	@Schema(description = "유저의 권한")
 	List<GrantedAuthority> authorities,
-
 	@Schema(description = "신규 유저 여부")
 	boolean isNewUser
 ) {
 
-	public static OidcLoginResponse of(AuthenticationToken token, ProfilePhoto photo, boolean isNewUser) {
+	public static OidcLoginResponse of(AuthenticationToken token, Avatar avatar, ProfilePhoto photo, boolean isNewUser) {
 		UserPrincipal principal = (UserPrincipal)token.getPrincipal();
 		return OidcLoginResponse.builder()
 			.email(principal.getEmail())
@@ -67,7 +71,9 @@ public record OidcLoginResponse(
 			.userType(principal.getUserType())
 			.adAgreed(principal.isAdAgreed())
 			.analysisAgreed(principal.isAnalysisAgreed())
-			.avatarId(principal.getAvatarId())
+			.id(principal.getAvatarId())
+			.cheffiCoinCount(avatar.getCheffiCoinCnt())
+			.pointCnt(avatar.getPointCnt())
 			.nickname(principal.getNickname())
 			.photoUrl(photo != null ? photo.getUrl() : null)
 			.profileCompleted(isProfileCompleted(principal.getAuthorities()))

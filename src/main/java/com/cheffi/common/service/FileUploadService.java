@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CopyObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.cheffi.common.config.exception.business.BusinessException;
@@ -40,6 +41,14 @@ public class FileUploadService {
 		ImageSize imageSize = getImageSize(file);
 		String fileUrl = uploadFileToS3(file, key);
 		return ImageFileInfo.of(fileUrl, key, imageSize);
+	}
+
+	public String copyInS3(String s3Key, S3RootPath rootPath, S3RootPath copyRootPath) {
+		String backupS3Key = s3Key.replaceFirst(rootPath.getPath(), copyRootPath.getPath());
+		CopyObjectRequest copyObjectRequest = new CopyObjectRequest(bucketName,s3Key,bucketName, backupS3Key);
+		amazonS3.copyObject(copyObjectRequest);
+
+		return backupS3Key;
 	}
 
 	public String getKey(MultipartFile file, S3RootPath path) {

@@ -1,28 +1,35 @@
 package com.cheffi.avatar.dto.response;
 
-import java.util.List;
-
-import com.cheffi.avatar.dto.common.TagDto;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import com.querydsl.core.annotations.QueryProjection;
+
+import io.swagger.v3.oas.annotations.media.Schema;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record RecommendFollowResponse(
-	Long avatarId,
+	@Schema(description = "ID", example = "1")
+	Long id,
+	@Schema(description = "닉네임", example = "동구밭에서캔감자")
 	String nickname,
-	String pictureUrl,
+	@Schema(description = "프로필 사진 URL")
+	String photoUrl,
+	@Schema(description = "자기소개", example = "동구밭 과수원길에서 태어난 감자입니다.")
+	String introduction,
+	@Schema(description = "팔로워 수", example = "16")
 	int followers,
-	List<TagDto> tags
+	@Schema(description = "팔로우 여부", example = "false")
+	boolean followed
 ) {
 
-	public static final String PICTURE_URL = "https://undongin.com/data/editor/0107/1609980770_6067.jpg";
-
-	public static List<RecommendFollowResponse> mock() {
-		return List.of(new RecommendFollowResponse(2L, "구창모", PICTURE_URL, 1400, TagDto.mock()),
-			new RecommendFollowResponse(3L, "신동갑", PICTURE_URL, 1500, TagDto.mock()),
-			new RecommendFollowResponse(4L, "이준경", PICTURE_URL, 1600, TagDto.mock()),
-			new RecommendFollowResponse(5L, "임성빈", PICTURE_URL, 2000, TagDto.mock()),
-			new RecommendFollowResponse(6L, "강민호", PICTURE_URL, 800, TagDto.mock())
-		);
+	@QueryProjection
+	public RecommendFollowResponse(Long id, String nickname, String photoUrl, String introduction, int followers,
+		boolean followed) {
+		this.id = id;
+		this.nickname = nickname;
+		this.photoUrl = photoUrl;
+		this.introduction = introduction;
+		this.followers = followers;
+		this.followed = followed;
 	}
 }

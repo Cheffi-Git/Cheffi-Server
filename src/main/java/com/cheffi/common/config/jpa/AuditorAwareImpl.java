@@ -7,15 +7,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 public class AuditorAwareImpl implements AuditorAware<String> {
 
 	@Override
 	public Optional<String> getCurrentAuditor() {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication == null)
+			return Optional.of("ANONYMOUS");
 		return Optional.of(authentication.getName());
 	}
 }

@@ -25,16 +25,22 @@ public class CheffiCoin extends BaseEntity {
 
     private int cfcValue;
 
+    private String description;
+
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "avatar_id")
     private Avatar avatar;
 
-    private CheffiCoin(Avatar avatar, int cfcValue) {
+    private CheffiCoin(Avatar avatar, int cfcValue, String description) {
         this.cfcValue = cfcValue;
         this.avatar = avatar;
+        this.description = description;
     }
 
-    //TODO 셰피코인 추가 메서드
+    public static CheffiCoin of(Avatar avatar, int value, String description) {
+        avatar.applyCheffiCoinBy(value);
+        return new CheffiCoin(avatar, value, description);
+    }
 
 }
