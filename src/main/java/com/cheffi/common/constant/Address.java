@@ -33,8 +33,8 @@ public class Address {
 
 	// 구, 시, 군
 	@NotBlank
-	@Parameter(name = "city", description = "검색 기준 시/군/구 주소(2차)", example = "마포구")
-	@Schema(description = "식당의 시/군/구 주소(2차)", example = "마포구")
+	@Parameter(name = "city", description = "검색 기준 시/군/구 주소(2차)", example = "양천구")
+	@Schema(description = "식당의 시/군/구 주소(2차)", example = "양천구")
 	@NotNull
 	private String city;
 
