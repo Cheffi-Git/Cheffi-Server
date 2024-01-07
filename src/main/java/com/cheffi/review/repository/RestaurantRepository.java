@@ -14,5 +14,4 @@ public interface RestaurantRepository extends JpaRepository<Restaurant, Long> {
 		+ "where r.nameForQuery like concat('%', :name, '%')"
 		+ "order by r.reviewCnt desc ")
 	Page<Restaurant> findByNameContaining(@Param("name") String name, Pageable pageable);
-
 }

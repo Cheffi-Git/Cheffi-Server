@@ -29,5 +29,4 @@ public class RestaurantDataService {
 		return restaurantDataRepository.findById(restaurantDataId)
 			.orElseThrow(() -> new EntityNotFoundException(ErrorCode.RESTAURANT_NOT_EXIST));
 	}
-
 }

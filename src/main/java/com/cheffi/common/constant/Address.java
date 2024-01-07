@@ -39,10 +39,11 @@ public class Address {
 	private String city;
 
 	protected Address(String province, String city) {
-		this.province = province;
-		this.city = city;
+		this.province = province.trim().replaceAll("\\s+", " ");
+		this.city = city.trim().replaceAll("\\s+", " ");
 	}
 
+	@JsonIgnore
 	public String getCombined() {
 		return getProvince() + " " + getCity();
 	}

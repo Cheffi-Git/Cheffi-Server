@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.cheffi.common.constant.DetailedAddress;
 import com.cheffi.common.domain.BaseTimeEntity;
 import com.cheffi.review.constant.RestaurantStatus;
+import com.cheffi.review.dto.request.RegisterRestaurantRequest;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -69,6 +70,10 @@ public class Restaurant extends BaseTimeEntity implements RestaurantInfo {
 		this.status = status;
 		this.detailedAddress = detailedAddress;
 		this.reviewCnt = 0;
+	}
+
+	public static Restaurant registerTempRestaurant(RegisterRestaurantRequest request) {
+		return new Restaurant(request.getName(), request.getDetailedAddress(), RestaurantStatus.PENDING);
 	}
 
 	@Override

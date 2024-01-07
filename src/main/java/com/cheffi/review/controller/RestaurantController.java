@@ -3,19 +3,25 @@ package com.cheffi.review.controller;
 import java.util.List;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cheffi.common.response.ApiResponse;
 import com.cheffi.review.dto.RestaurantInfoDto;
+import com.cheffi.review.dto.request.RegisterRestaurantRequest;
 import com.cheffi.review.service.RestaurantInfoService;
+import com.cheffi.review.service.RestaurantService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
@@ -25,6 +31,7 @@ import lombok.RequiredArgsConstructor;
 @RequestMapping("${api.prefix}/restaurants")
 public class RestaurantController {
 	private final RestaurantInfoService restaurantInfoService;
+	private final RestaurantService restaurantService;
 
 	@Tag(name = "${swagger.tag.review-cud}")
 	@Operation(summary = "게시글 등록용 식당 검색 API",
@@ -38,4 +45,13 @@ public class RestaurantController {
 		return ApiResponse.success(restaurantInfoService.searchRestaurantByName(name, PageRequest.of(0, 10)));
 	}
 
+	@Tag(name = "Restaurant")
+	@Operation(summary = "식당 등록 신청 API",
+	description = "사용자에 의한 식당 등록 API입니다. "
+		+ "임시적으로 식당이 등록되며 관리자에 의해 최종 등록됩니다.")
+	@PreAuthorize("hasRole('USER')")
+	@PostMapping
+	public ApiResponse<Long> registerTempRestaurant(@Valid @RequestBody RegisterRestaurantRequest request) {
+		return ApiResponse.success(restaurantService.registerTempRestaurant(request));
+	}
 }
