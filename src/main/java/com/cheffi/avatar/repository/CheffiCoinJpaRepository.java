@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.cheffi.avatar.constant.CfcHistoryCategory;
 import com.cheffi.avatar.domain.CheffiCoin;
-import com.cheffi.avatar.dto.CheffiCoinHistoryRequest;
+import com.cheffi.avatar.dto.request.CheffiCoinHistoryRequest;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

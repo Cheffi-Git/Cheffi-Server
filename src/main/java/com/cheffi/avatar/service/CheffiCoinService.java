@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cheffi.avatar.domain.CheffiCoin;
 import com.cheffi.avatar.dto.CheffiCoinHistoryDto;
-import com.cheffi.avatar.dto.CheffiCoinHistoryRequest;
+import com.cheffi.avatar.dto.request.CheffiCoinHistoryRequest;
 import com.cheffi.avatar.repository.CheffiCoinJpaRepository;
 import com.cheffi.avatar.repository.CheffiCoinRepository;
 import com.cheffi.common.dto.CursorPage;

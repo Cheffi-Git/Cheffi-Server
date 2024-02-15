@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cheffi.avatar.dto.CheffiCoinHistoryDto;
-import com.cheffi.avatar.dto.CheffiCoinHistoryRequest;
+import com.cheffi.avatar.dto.request.CheffiCoinHistoryRequest;
 import com.cheffi.avatar.service.CheffiCoinService;
 import com.cheffi.common.response.ApiCursorPageResponse;
 import com.cheffi.oauth.model.UserPrincipal;

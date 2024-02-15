@@ -1,4 +1,4 @@
-package com.cheffi.health.dto;
+package com.cheffi.health.dto.response;
 
 import java.time.LocalDateTime;
 import java.util.List;

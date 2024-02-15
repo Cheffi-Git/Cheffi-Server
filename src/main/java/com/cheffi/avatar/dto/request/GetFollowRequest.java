@@ -1,4 +1,4 @@
-package com.cheffi.cs.dto;
+package com.cheffi.avatar.dto.request;
 
 import org.hibernate.validator.constraints.Range;
 
@@ -9,7 +9,7 @@ import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 
 @Getter
-public class GetBlockRequest {
+public class GetFollowRequest {
 
 	@Parameter(description = "검색을 시작할 커서의 id(포함) 최초 조회시에는 입력하지 말아주세요")
 	@Nullable
@@ -21,13 +21,9 @@ public class GetBlockRequest {
 	@Range(min = 1, max = 16)
 	private final Integer size;
 
-	public GetBlockRequest(Long cursor, Integer size) {
+	public GetFollowRequest(Long cursor, Integer size) {
 		this.cursor = cursor;
 		this.size = size;
-	}
-
-	public Long getCursor(Long defaultValue) {
-		return cursor != null ? cursor : defaultValue;
 	}
 
 }

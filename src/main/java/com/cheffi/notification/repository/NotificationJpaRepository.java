@@ -7,7 +7,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.cheffi.notification.domain.Notification;
-import com.cheffi.notification.dto.GetNotificationRequest;
+import com.cheffi.notification.dto.request.GetNotificationRequest;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;

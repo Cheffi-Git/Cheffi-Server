@@ -2,7 +2,7 @@ package com.cheffi.user.dto;
 
 import java.util.List;
 
-import com.cheffi.oauth.dto.SocialUserCreateRequest;
+import com.cheffi.oauth.dto.request.SocialUserCreateRequest;
 import com.cheffi.user.constant.Password;
 import com.cheffi.user.constant.UserType;
 import com.cheffi.user.domain.Role;

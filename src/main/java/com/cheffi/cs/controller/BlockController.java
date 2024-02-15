@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cheffi.common.response.ApiCursorPageResponse;
 import com.cheffi.common.response.ApiResponse;
-import com.cheffi.cs.dto.DeleteBlockRequest;
-import com.cheffi.cs.dto.GetBlockRequest;
-import com.cheffi.cs.dto.GetBlockResponse;
-import com.cheffi.cs.dto.PostBlockRequest;
+import com.cheffi.cs.dto.reqeust.DeleteBlockRequest;
+import com.cheffi.cs.dto.reqeust.GetBlockRequest;
+import com.cheffi.cs.dto.response.GetBlockResponse;
+import com.cheffi.cs.dto.reqeust.PostBlockRequest;
 import com.cheffi.cs.service.BlockService;
 import com.cheffi.oauth.model.UserPrincipal;
 

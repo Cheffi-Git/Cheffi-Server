@@ -1,4 +1,4 @@
-package com.cheffi.cs.dto;
+package com.cheffi.cs.dto.response;
 
 import java.time.LocalDateTime;
 

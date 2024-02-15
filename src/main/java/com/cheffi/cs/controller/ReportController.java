@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cheffi.common.response.ApiResponse;
-import com.cheffi.cs.dto.GetReportReasonResponse;
-import com.cheffi.cs.dto.PostReportRequest;
+import com.cheffi.cs.dto.response.GetReportReasonResponse;
+import com.cheffi.cs.dto.reqeust.PostReportRequest;
 import com.cheffi.cs.service.ReportService;
 import com.cheffi.oauth.model.UserPrincipal;
 

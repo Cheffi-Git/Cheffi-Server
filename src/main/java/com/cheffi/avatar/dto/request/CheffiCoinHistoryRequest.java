@@ -1,4 +1,4 @@
-package com.cheffi.avatar.dto;
+package com.cheffi.avatar.dto.request;
 
 import org.hibernate.validator.constraints.Range;
 

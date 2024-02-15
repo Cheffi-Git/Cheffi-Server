@@ -1,4 +1,4 @@
-package com.cheffi.oauth.dto;
+package com.cheffi.oauth.dto.request;
 
 import java.util.List;
 

@@ -1,6 +1,8 @@
-package com.cheffi.review.dto;
+package com.cheffi.review.dto.request;
 
 import org.hibernate.validator.constraints.Range;
+
+import com.cheffi.review.dto.ReviewCursor;
 
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;

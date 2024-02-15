@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.data.redis.core.ZSetOperations;
 
 import com.cheffi.review.dto.ReviewTuple;
-import com.cheffi.review.dto.dao.ScoreDto;
+import com.cheffi.review.dto.ScoreDto;
 
 public class ReviewRanking {
 	private final List<ReviewScore> reviewScores;

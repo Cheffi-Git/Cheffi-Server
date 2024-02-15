@@ -1,4 +1,4 @@
-package com.cheffi.cs.dto;
+package com.cheffi.cs.dto.response;
 
 import com.cheffi.cs.constant.ReportReason;
 import com.fasterxml.jackson.annotation.JsonInclude;

@@ -13,8 +13,8 @@ import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.BusinessException;
 import com.cheffi.cs.constant.ReportReason;
 import com.cheffi.cs.domain.Report;
-import com.cheffi.cs.dto.GetReportReasonResponse;
-import com.cheffi.cs.dto.PostReportRequest;
+import com.cheffi.cs.dto.response.GetReportReasonResponse;
+import com.cheffi.cs.dto.reqeust.PostReportRequest;
 import com.cheffi.cs.repository.ReportRepository;
 
 import lombok.RequiredArgsConstructor;

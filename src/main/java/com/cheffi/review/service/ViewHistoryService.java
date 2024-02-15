@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cheffi.avatar.service.AvatarService;
 import com.cheffi.review.domain.Review;
 import com.cheffi.review.domain.ViewHistory;
-import com.cheffi.review.dto.dao.ScoreDto;
+import com.cheffi.review.dto.ScoreDto;
 import com.cheffi.review.repository.ViewHistoryJpaRepository;
 import com.cheffi.review.repository.ViewHistoryRepository;
 

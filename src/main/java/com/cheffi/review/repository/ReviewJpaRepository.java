@@ -13,8 +13,8 @@ import org.springframework.stereotype.Repository;
 
 import com.cheffi.common.constant.Address;
 import com.cheffi.review.domain.Review;
-import com.cheffi.review.dto.AddressSearchRequest;
-import com.cheffi.review.dto.MenuSearchRequest;
+import com.cheffi.review.dto.request.AddressSearchRequest;
+import com.cheffi.review.dto.request.MenuSearchRequest;
 import com.cheffi.review.dto.ReviewCursor;
 import com.cheffi.review.dto.ReviewInfoDto;
 import com.cheffi.review.dto.ReviewSearchCondition;

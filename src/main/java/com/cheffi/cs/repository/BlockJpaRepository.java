@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.cheffi.cs.dto.GetBlockRequest;
-import com.cheffi.cs.dto.GetBlockResponse;
-import com.cheffi.cs.dto.QGetBlockResponse;
+import com.cheffi.cs.dto.reqeust.GetBlockRequest;
+import com.cheffi.cs.dto.response.GetBlockResponse;
+import com.cheffi.cs.dto.response.QGetBlockResponse;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 

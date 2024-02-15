@@ -11,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.cheffi.avatar.domain.QAvatar;
 import com.cheffi.avatar.domain.QFollow;
 import com.cheffi.avatar.dto.FollowCursor;
-import com.cheffi.avatar.dto.GetFollowRequest;
+import com.cheffi.avatar.dto.request.GetFollowRequest;
 import com.cheffi.avatar.dto.QFollowCursor;
 import com.cheffi.avatar.dto.response.GetFollowResponse;
 import com.cheffi.avatar.dto.response.QGetFollowResponse;

@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.cheffi.avatar.domain.Avatar;
 import com.cheffi.avatar.domain.Follow;
-import com.cheffi.avatar.dto.GetFollowRequest;
+import com.cheffi.avatar.dto.request.GetFollowRequest;
 import com.cheffi.avatar.dto.response.AddFollowResponse;
 import com.cheffi.avatar.dto.response.GetFollowResponse;
 import com.cheffi.avatar.dto.response.RecommendFollowResponse;

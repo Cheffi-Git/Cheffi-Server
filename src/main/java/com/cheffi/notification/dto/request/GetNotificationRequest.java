@@ -1,4 +1,4 @@
-package com.cheffi.notification.dto;
+package com.cheffi.notification.dto.request;
 
 import org.hibernate.validator.constraints.Range;
 

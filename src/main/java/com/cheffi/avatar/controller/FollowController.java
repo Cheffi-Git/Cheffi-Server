@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cheffi.avatar.dto.GetFollowRequest;
+import com.cheffi.avatar.dto.request.GetFollowRequest;
 import com.cheffi.avatar.dto.request.DeleteFollowRequest;
 import com.cheffi.avatar.dto.request.PostFollowRequest;
 import com.cheffi.avatar.dto.response.AddFollowResponse;

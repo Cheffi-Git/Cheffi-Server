@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.cheffi.common.response.ApiCursorPageResponse;
 import com.cheffi.common.response.ApiResponse;
-import com.cheffi.notification.dto.DeleteNotificationRequest;
-import com.cheffi.notification.dto.GetNotificationRequest;
+import com.cheffi.notification.dto.request.DeleteNotificationRequest;
+import com.cheffi.notification.dto.request.GetNotificationRequest;
 import com.cheffi.notification.dto.NotificationDto;
 import com.cheffi.notification.service.NotificationService;
 import com.cheffi.oauth.model.UserPrincipal;

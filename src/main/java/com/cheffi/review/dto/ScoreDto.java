@@ -1,4 +1,4 @@
-package com.cheffi.review.dto.dao;
+package com.cheffi.review.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 

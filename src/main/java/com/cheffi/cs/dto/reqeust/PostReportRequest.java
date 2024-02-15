@@ -1,4 +1,4 @@
-package com.cheffi.cs.dto;
+package com.cheffi.cs.dto.reqeust;
 
 import com.cheffi.cs.constant.ReportReason;
 

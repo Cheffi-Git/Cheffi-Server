@@ -9,10 +9,10 @@ import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.BusinessException;
 import com.cheffi.common.dto.CursorPage;
 import com.cheffi.cs.domain.Block;
-import com.cheffi.cs.dto.DeleteBlockRequest;
-import com.cheffi.cs.dto.GetBlockRequest;
-import com.cheffi.cs.dto.GetBlockResponse;
-import com.cheffi.cs.dto.PostBlockRequest;
+import com.cheffi.cs.dto.reqeust.DeleteBlockRequest;
+import com.cheffi.cs.dto.reqeust.GetBlockRequest;
+import com.cheffi.cs.dto.response.GetBlockResponse;
+import com.cheffi.cs.dto.reqeust.PostBlockRequest;
 import com.cheffi.cs.repository.BlockJpaRepository;
 import com.cheffi.cs.repository.BlockRepository;
 

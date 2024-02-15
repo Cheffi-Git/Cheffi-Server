@@ -1,13 +1,12 @@
-package com.cheffi.cs.dto;
+package com.cheffi.cs.dto.reqeust;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
-public record PostBlockRequest(
-	@Schema(description = "차단 대상의 ID", example = "10")
-	@Positive
-	@NotNull
+public record DeleteBlockRequest(
+	@NotNull @Positive
+	@Schema(description = "차단 해제 대상의 ID", example = "10")
 	Long id
 ) {
 }
