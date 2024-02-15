@@ -15,7 +15,7 @@ import lombok.Getter;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ApiPageResponse<T> {
 
-	@Schema(description = "데이터")
+	@Schema(description = "데이터 [Nullable]", nullable = true)
 	private final List<T> data;
 	@Schema(description = "비어있는 지 여부", example = "false")
 	private final boolean empty;
@@ -33,7 +33,7 @@ public class ApiPageResponse<T> {
 	private final long offset;
 	@Schema(description = "페이징 여부", example = "true")
 	private final boolean paged;
-	@Schema(description = "정렬 기준")
+	@Schema(description = "정렬 기준 [Nullable]", nullable = true)
 	private final Sort sort;
 	@Schema(description = "응답 코드", example = "200")
 	private final int code;

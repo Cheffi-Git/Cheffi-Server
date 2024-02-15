@@ -14,13 +14,13 @@ import lombok.Getter;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ApiCursorPageResponse<T, C> {
 
-	@Schema(description = "데이터")
+	@Schema(description = "데이터 [Nullable]", nullable = true)
 	private final List<T> data;
-	@Schema(description = "첫 데이터의 커서")
+	@Schema(description = "첫 데이터의 커서 [Nullable]", nullable = true)
 	private final C first;
-	@Schema(description = "마지막 데이터의 커서")
+	@Schema(description = "마지막 데이터의 커서 [Nullable]", nullable = true)
 	private final C end;
-	@Schema(description = "다음 조회할 데이터의 첫 커서 ()")
+	@Schema(description = "다음 조회할 데이터의 첫 커서 ()[Nullable]", nullable = true)
 	private final C next;
 	@Schema(description = "다음 데이터 존재 여부")
 	private final boolean hasNext;

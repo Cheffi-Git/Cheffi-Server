@@ -6,6 +6,7 @@ import lombok.Getter;
 @Getter
 public class ApiResponse<T> {
 
+	@Schema(description = "데이터 [Nullable]", nullable = true)
 	private final T data;
 
 	@Schema(description = "응답 코드", example = "200")
