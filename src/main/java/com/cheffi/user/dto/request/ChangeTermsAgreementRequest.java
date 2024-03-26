@@ -8,12 +8,9 @@ import jakarta.validation.constraints.NotNull;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record ChangeTermsAgreementRequest(
+	@Schema(description = "마케팅 정보 수신 동의 여부", example = "true")
 	@NotNull
-	@Schema(description = "광고 수신 동의 여부", example = "true")
-	Boolean adAgreed,
-	@NotNull
-	@Schema(description = "개인정보 분석 활용 동의", example = "true")
-	Boolean analysisAgreed
+	Boolean adAgreed
 ) {
 
 }

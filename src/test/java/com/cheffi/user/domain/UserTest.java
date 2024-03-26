@@ -3,6 +3,7 @@ package com.cheffi.user.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,15 +22,15 @@ import com.cheffi.user.dto.UserCreateRequest;
 @ExtendWith(MockitoExtension.class)
 class UserTest {
 
-	public User user;
-	public static final Role ROLE_ADMIN = new Role(RoleType.ADMIN);
-	public static final Role ROLE_USER = new Role(RoleType.USER);
-	public static final Role ROLE_GUEST = new Role(RoleType.GUEST);
-	public static final Role NO_PROFILE = new Role(RoleType.NO_PROFILE);
-	public static final List<Role> ROLES = List.of(ROLE_USER, ROLE_GUEST);
-	public static final String USER_NAME = "홍길동";
-	public static final String USER_EMAIL = "foo@naver.com";
-	public static final UserType USER_TYPE = UserType.KAKAO;
+	private User user;
+	private static final Role ROLE_ADMIN = new Role(RoleType.ADMIN);
+	private static final Role ROLE_USER = new Role(RoleType.USER);
+	private static final Role ROLE_GUEST = new Role(RoleType.GUEST);
+	private static final Role NO_PROFILE = new Role(RoleType.NO_PROFILE);
+	private static final List<Role> ROLES = List.of(ROLE_USER, ROLE_GUEST);
+	private static final String USER_NAME = "홍길동";
+	private static final String USER_EMAIL = "foo@naver.com";
+	private static final UserType USER_TYPE = UserType.KAKAO;
 
 	@BeforeEach
 	void setUp() {
@@ -213,4 +214,55 @@ class UserTest {
 
 	}
 
+	@Nested
+	@DisplayName("로그인 날짜 관련 메서드")
+	class LoginDate {
+
+		private static final LocalDate TWO_DAYS_AGO = LocalDate.now().minusDays(2);
+		private static final LocalDate TODAY = LocalDate.now();
+
+		@Nested
+		@DisplayName("hasLoggedInToday 메서드")
+		class HasLoggedInToday {
+
+			@Test
+			@DisplayName("마지막 로그인 날짜가 오늘 이전이면 flase 를 반환한다.")
+			void given2DaysAgo() {
+				//when
+				user.setLastLoginDate(TWO_DAYS_AGO);
+				//then
+				assertThat(user.hasLoggedInToday()).isFalse();
+			}
+
+			@Test
+			@DisplayName("마지막 로그인 날짜가 오늘이면 true 를 반환한다.")
+			void givenToday() {
+				//when
+				user.setLastLoginDate(TODAY);
+				//then
+				assertThat(user.hasLoggedInToday()).isTrue();
+			}
+
+		}
+
+		@Nested
+		@DisplayName("updateLastLoginDate 메서드")
+		class UpdateLastLoginDate {
+
+			@Test
+			@DisplayName("마지막 로그인 날짜가 오늘 이전이면 오늘로 변경된다.")
+			void given2DaysAgo() {
+				//given
+				user.setLastLoginDate(TWO_DAYS_AGO);
+
+				//when
+				user.updateLastLoginDate();
+
+				//then
+				assertThat(user.getLastLoginDate()).isEqualTo(TODAY);
+			}
+
+		}
+
+	}
 }

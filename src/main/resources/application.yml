@@ -1,24 +1,18 @@
 spring:
   profiles:
     group:
-      "dev": "dev, oauth, s3, actuator"
-      "local": "local, oauth, s3, actuator"
-      "default": "local, oauth, s3, actuator"
-  h2:
-    console:
-      enabled: true
+      "dev": "dev, oauth, s3, actuator, dev-db, regions, swagger"
+      "local": "local, oauth, s3, actuator, regions, swagger"
+      "default": "local, oauth, s3, actuator, regions, swagger"
+  config:
+    import: classpath:data/application-regions.yml
 
   jpa:
     hibernate:
       # ddl-auto strategy
-      ddl-auto: create
+      ddl-auto: update
 
     properties:
-      hibernate:
-        # show formatted sql
-        format_sql: true
-        show_sql: true
-
         # set default batch size
         default_batch_fetch_size: 100
     # turn OSIV off
@@ -30,12 +24,17 @@ spring:
       max-request-size: 20MB
 
 logging:
-  level:
-    com.cheffi.web.kakao.client: debug
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss.SSS,Asia/Seoul
+
 
 springdoc:
   # define target package of swagger scanning
   packages-to-scan: com.cheffi
+  swagger-ui:
+    tags-sorter: alpha
 
 api:
   prefix: /api/v1
+
+

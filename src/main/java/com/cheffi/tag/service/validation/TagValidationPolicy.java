@@ -4,21 +4,19 @@ import java.util.List;
 
 import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.BusinessException;
+import com.cheffi.tag.constant.TagLimit;
+import com.cheffi.tag.constant.TagType;
 import com.cheffi.tag.domain.Tag;
 
-public abstract class TagValidationPolicy {
+public interface TagValidationPolicy {
 
-	private static final int TASTE_TAG_MIN = 5;
-	private static final int FOOD_TAG_MIN = 3;
+	void verifyTagsByType(List<Tag> tags, TagType type);
 
-	public abstract void validateTagsOfAvatar(List<Tag> tags, List<Long> foodTagIds, List<Long> tasteTagIds);
+	default void validateTagsByType(List<Tag> tags, TagType type, TagLimit limit) {
+		if(tags.size() < limit.getMin(type))
+			throw new BusinessException(ErrorCode.LOWER_LIMIT_UNSATISFIED);
 
-	protected void checkSize(List<Tag> tags, List<Long> foodTagIds, List<Long> tasteTagIds) {
-		if (tags.size() != foodTagIds.size() + tasteTagIds.size())
-			throw new BusinessException(ErrorCode.BAD_AVATAR_TAG_REQUEST);
-
-		if (foodTagIds.size() < FOOD_TAG_MIN || tasteTagIds.size() < TASTE_TAG_MIN)
-			throw new BusinessException(ErrorCode.BAD_AVATAR_TAG_REQUEST);
+		verifyTagsByType(tags, type);
 	}
 
 }

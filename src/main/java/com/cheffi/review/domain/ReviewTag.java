@@ -12,7 +12,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,23 +20,26 @@ import lombok.NoArgsConstructor;
 @Entity
 public class ReviewTag extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
-    private Review review;
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "review_id")
+	private Review review;
 
-    @NotNull
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tag_id")
-    private Tag tag;
+	@NotNull
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "tag_id")
+	private Tag tag;
 
-    @Builder
-    public ReviewTag(Review review, Tag tag) {
-        this.review = review;
-        this.tag = tag;
-    }
+	private ReviewTag(Review review, Tag tag) {
+		this.review = review;
+		this.tag = tag;
+	}
+
+	public static ReviewTag mapTagToReview(Review review, Tag tag) {
+		return new ReviewTag(review, tag);
+	}
 }

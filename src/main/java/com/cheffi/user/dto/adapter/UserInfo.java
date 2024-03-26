@@ -17,23 +17,23 @@ import lombok.Builder;
 @Builder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record UserInfo(
-	@Schema(description = "이메일", example = "kim12345@naver.com")
+	@Schema(description = "이메일", example = "kim12345@naver.com", required = true)
 	String email,
 	@Schema(description = "마지막 비밀번호 변경 시각", example = "2023-03-01 16:31:04.019")
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "Asia/Seoul")
 	LocalDateTime lastPwChangedDate,
-	@Schema(description = "가입 시각", example = "2023-03-01 16:31:04.019")
+	@Schema(description = "가입 시각", example = "2023-03-01 16:31:04.019", required = true)
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss.SSS", timezone = "Asia/Seoul")
 	LocalDateTime createdDate,
 	@Schema(description = "이름", example = "안유진")
 	String name,
-	@Schema(description = "유저가 가입한 플랫폼", example = "KAKAO")
+	@Schema(description = "유저가 가입한 플랫폼", example = "KAKAO", required = true)
 	UserType userType,
-	@Schema(description = "광고 수신 동의 여부", example = "true")
+	@Schema(description = "광고 수신 동의 여부", example = "true", required = true)
 	boolean adAgreed,
-	@Schema(description = "개인정보 분석 이용 동의 여부", example = "true")
+	@Schema(description = "개인정보 분석 이용 동의 여부", example = "true", required = true)
 	boolean analysisAgreed,
-	@Schema(description = "역할", example = "USER")
+	@Schema(description = "역할", example = "USER", required = true)
 	List<String> authorities,
 	@JsonIgnore
 	String fcmToken

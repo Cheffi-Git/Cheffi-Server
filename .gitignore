@@ -39,6 +39,11 @@ out/
 ### secret ###
 application-oauth.yml
 application-s3.yml
+application-dev-db.yml
+application-eb-dev-db.yml
 
 ### QueryDSL ###
 **/src/main/generated
+
+### Elastic Beanstalk ###
+Dockerrun.aws.json

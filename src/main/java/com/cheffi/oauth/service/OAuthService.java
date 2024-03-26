@@ -6,15 +6,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.cheffi.avatar.domain.Avatar;
 import com.cheffi.avatar.service.AvatarService;
+import com.cheffi.avatar.service.CheffiCoinService;
 import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.AuthenticationException;
+import com.cheffi.common.config.exception.business.DuplicatedEmailException;
 import com.cheffi.common.service.SecurityContextService;
 import com.cheffi.oauth.dto.IdTokenAttributes;
 import com.cheffi.oauth.dto.request.OidcLoginRequest;
@@ -35,6 +36,7 @@ public class OAuthService {
 	private final RoleService roleService;
 	private final SecurityContextService securityContextService;
 	private final Map<String, OidcLoginApiService> providerMap;
+	private final CheffiCoinService cheffiCoinService;
 
 	@Transactional
 	public OidcLoginResponse oidcLogin(OidcLoginRequest loginRequest, String provider) {
@@ -52,14 +54,22 @@ public class OAuthService {
 		boolean isNewUser = optionalUser.isEmpty();
 		User user = optionalUser.orElseGet(() -> signUp(oAuthAttributes));
 
-		Avatar avatar = avatarService.getByUserWithPhoto(user);
+		// 이메일로 등록된 유저의 플랫폼과 현재 로그인을 시도하는 플랫폼과 다르면 에러 throw
+		if (!isNewUser && !user.isUserOf(provider))
+			throw new DuplicatedEmailException(ErrorCode.EMAIL_IS_REGISTER_WITH_ANOTHER_PROVIDER, user.getUserType());
 
-		Set<GrantedAuthority> authorities = getAuthoritiesFromUser(user);
+		Avatar avatar = avatarService.getByUserWithPhoto(user);
+		if (isNewUser || !user.hasLoggedInToday()) {
+			user.updateLastLoginDate();
+			cheffiCoinService.earnCheffiCoinForLogin(avatar.getId());
+		}
+
+		Set<SimpleGrantedAuthority> authorities = getAuthoritiesFromUser(user);
 		AuthenticationToken authenticationToken =
 			AuthenticationToken.of(user, avatar, loginRequest.token(), authorities);
 
 		securityContextService.saveToSecurityContext(authenticationToken);
-		return OidcLoginResponse.of(authenticationToken, avatar.getPhoto(), isNewUser);
+		return OidcLoginResponse.of(authenticationToken, avatar, avatar.getPhoto(), isNewUser);
 	}
 
 	private User signUp(OAuthAttributes oAuthAttributes) {
@@ -67,7 +77,7 @@ public class OAuthService {
 			.toUserCreateRequest(List.of(roleService.getUserRole(), roleService.getNoProfileRole())));
 	}
 
-	private Set<GrantedAuthority> getAuthoritiesFromUser(User user) {
+	private Set<SimpleGrantedAuthority> getAuthoritiesFromUser(User user) {
 		return user.getUserRoles()
 			.stream()
 			.map(ur ->

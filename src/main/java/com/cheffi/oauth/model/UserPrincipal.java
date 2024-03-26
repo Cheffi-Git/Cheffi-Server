@@ -3,10 +3,9 @@ package com.cheffi.oauth.model;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -43,9 +42,9 @@ public class UserPrincipal implements UserDetails, Serializable {
 	private String nickname;
 
 	// Role
-	private List<GrantedAuthority> authorities;
+	private List<SimpleGrantedAuthority> authorities;
 
-	public static UserPrincipal of(User user, Avatar avatar, Collection<? extends GrantedAuthority> authorities) {
+	public static UserPrincipal of(User user, Avatar avatar, Set<SimpleGrantedAuthority> authorities) {
 		return UserPrincipal.builder()
 			.userId(user.getId())
 			.email(user.getEmail())
@@ -71,10 +70,7 @@ public class UserPrincipal implements UserDetails, Serializable {
 		this.analysisAgreed = info.analysisAgreed();
 		this.fcmToken = info.fcmToken();
 		if (info.authorities() != null)
-			this.authorities = info.authorities()
-				.stream()
-				.map((a -> (GrantedAuthority)new SimpleGrantedAuthority(a)))
-				.toList();
+			this.authorities = info.authorities().stream().map((SimpleGrantedAuthority::new)).toList();
 		return this;
 	}
 
@@ -84,7 +80,7 @@ public class UserPrincipal implements UserDetails, Serializable {
 	}
 
 	@Override
-	public Collection<? extends GrantedAuthority> getAuthorities() {
+	public List<SimpleGrantedAuthority> getAuthorities() {
 		return authorities;
 	}
 
@@ -121,7 +117,7 @@ public class UserPrincipal implements UserDetails, Serializable {
 	/**
 	 * TODO 테스트용 토큰 발급을 위한 메서드로 프로덕션에서는 반드시 비활성화 필요
 	 */
-	public static UserPrincipal mock(Collection<? extends GrantedAuthority> authorities) {
+	public static UserPrincipal mock(List<SimpleGrantedAuthority> authorities) {
 		return UserPrincipal.builder()
 			.userId(34L)
 			.email("Mock@mock.com")
@@ -137,7 +133,7 @@ public class UserPrincipal implements UserDetails, Serializable {
 			.fcmToken("fcm-token")
 			.avatarId(34L)
 			.nickname("댕댕이")
-			.authorities(new ArrayList<>(authorities))
+			.authorities(authorities)
 			.build();
 	}
 

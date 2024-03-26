@@ -1,6 +1,5 @@
 package com.cheffi.user.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -14,9 +13,7 @@ import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.BusinessException;
 import com.cheffi.user.constant.RoleType;
 import com.cheffi.user.constant.UserType;
-import com.cheffi.user.domain.Role;
 import com.cheffi.user.domain.User;
-import com.cheffi.user.domain.UserRole;
 import com.cheffi.user.dto.UserCreateRequest;
 import com.cheffi.user.dto.adapter.UserInfo;
 import com.cheffi.user.repository.UserRepository;
@@ -35,8 +32,7 @@ public class UserService {
 	@UpdatePrincipal
 	public UserInfo getUserInfo(Long userId) {
 		User user = getByIdWithRoles(userId);
-		List<Role> roles = user.getUserRoles().stream().map(UserRole::getRole).toList();
-		return UserInfo.of(user, roles);
+		return UserInfo.of(user, user.getRoles());
 	}
 
 	public User getByIdWithRoles(Long userId) {
@@ -81,8 +77,9 @@ public class UserService {
 	}
 
 	@Transactional
-	public void removeNoProfileRole(Long userId) {
+	public User removeNoProfileRole(Long userId) {
 		User user = getByIdWithRoles(userId);
 		user.removeRole(roleService.getNoProfileRole());
+		return user;
 	}
 }

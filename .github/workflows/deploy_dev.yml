@@ -1,69 +1,156 @@
-name: Deploy DEV
+name: Deploy Dev
 
 on:
-  push:
-    branches:
-      - develop
+#  push:
+#    branches:
+#      - cicd/eb
   workflow_dispatch:
 
 jobs:
   build:
-    name: Build with Gradle
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Java environment
+      - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
           java-version: '17'
+          distribution: 'zulu'
 
-      - name: Set execute permissions for Gradle wrapper
-        run: chmod +x gradlew
+      - name: Copy Secrets
+        uses: ./.github/actions/copy_secret
+        with:
+          profile: dev
+          oauth-secret: ${{ secrets.OAUTH_SECRET }}
+          s3-secret: ${{ secrets.S3_SECRET }}
+          dev-db-secret: ${{ secrets.EB_DEV_DB_SECRET }}
 
-      - name: Build project with Gradle
-        run: ./gradlew clean build
+      - name: Run MySQL image for test
+        run: docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=local_db mysql:8.0.31
+
+      - name: Build with Gradlew
+        env:
+          CHEFFI_DIRECTORY: ${{ secrets.CHEFFI_DIRECTORY }}
+        run: |
+          export CHEFFI_DIRECTORY=$CHEFFI_DIRECTORY
+          ./gradlew clean build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: build-artifacts
+          path: |
+            build/libs/*.jar
+            Dockerfile
+            .ebextensions
+
+      - name: Deployment Fail Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: 'Deployment Fail Notification'
+          text: '서버 배포에 실패했습니다.'
+          fields: repo,message,commit,author,ref,workflow,job,took,pullRequest
+          mention: 'U05BT7J8YV8,U05BT2V4C58'
+          if_mention: failure
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_BACKEND_WEBHOOK_URL }} # required
+        if: failure()
+
 
   deploy:
-    name: Deploy with SCP and Docker
+    name: Deploy with ECR and EB
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
 
-      - name: SCP project JAR and Dockerfile
-        env:
-          SSH_KEY: ${{ secrets.SSH_KEY }}
-          SSH_HOST: ${{ secrets.SSH_HOST }}
-          SSH_PORT: ${{ secrets.SSH_PORT }}
-          SSH_USERNAME: ${{ secrets.SSH_USERNAME }}
-          CONTAINER_NAME: &container_name cheffi_server_dev
-          CONTAINER_PATH: &container_path ~/workspace/*container_name
-        run: |
-          echo "$SSH_KEY" > private_key.pem
-          chmod 600 private_key.pem
-          mkdir -p ~/.ssh
-          touch ~/.ssh/known_hosts
-          ssh-keyscan -p $SSH_PORT -H $SSH_HOST >> ~/.ssh/known_hosts
-          scp -i private_key.pem -P $SSH_PORT -r ./build/libs/Cehffi-Server-0.0.1-SNAPSHOT.jar $SSH_USERNAME@$SSH_HOST:*container_path/build/libs/
-          scp -i private_key.pem -P $SSH_PORT -r ./Dockerfile $SSH_USERNAME@$SSH_HOST:*container_path
-          rm -f private_key.pem
-
-      - name: Build and run Docker container
-        uses: appleboy/ssh-action@master
+      - name: Download build artifacts
+        uses: actions/download-artifact@v2
         with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd ${HOME}/workspace/*container_name
-            /usr/local/bin/docker build -t *container_name .
-            /usr/local/bin/docker stop *container_name || true
-            /usr/local/bin/docker rm *container_name || true
-            /usr/local/bin/docker image prune --force
-            /usr/local/bin/docker run -d -p 9000:9000 --name *container_name \
-                    *container_name
+          name: build-artifacts
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_EB_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_EB_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_EB_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ secrets.AWS_EB_IMAGE_TAG }}
+#          IMAGE_TAG: ${{ github.sha }}
+          AWS_REGION: ${{ secrets.AWS_EB_REGION }}                    # set this to your preferred AWS region, e.g. us-west-1
+          ECR_REPOSITORY: ${{ secrets.AWS_EB_ECR_REPOSITORY }}        # set this to your Amazon ECR repository name
+        run: |
+          # Build a docker container and
+          # push it to ECR so that it can
+          # be deployed to Elastic Beanstalk.
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: Get current time
+        uses: 1466587594/get-current-time@v2
+        id: current-time
+        with:
+          format: YYYYMMDD_HH-mm-ss
+          utcOffset: "+09:00"
+
+      - name: Copy Dockerrun.aws.json
+        env:
+          DOCKER_RUN_AWS: ${{ secrets.DOCKER_RUN_AWS }}
+        shell: bash
+        run: echo $DOCKER_RUN_AWS | base64 --decode > Dockerrun.aws.json
+
+      - name: Generate deployment package
+        run: |
+          mkdir -p deploy
+          cp -r .ebextensions deploy/.ebextensions
+          cp Dockerrun.aws.json deploy/Dockerrun.aws.json
+          cd deploy && zip -r deploy.zip .
+
+      - name: Beanstalk Deploy
+        uses: einaregilsson/beanstalk-deploy@v14
+        with:
+          aws_access_key: ${{ secrets.AWS_EB_ACCESS_KEY_ID }}
+          aws_secret_key: ${{ secrets.AWS_EB_SECRET_ACCESS_KEY }}
+          application_name: cheffi-dev-eb
+          environment_name: Cheffi-dev-eb-env
+          version_label: cheffi-dev-${{ steps.current-time.outputs.formattedTime }}
+          region: ${{ secrets.AWS_EB_REGION }}
+          deployment_package: deploy/deploy.zip
+          wait_for_environment_recovery: 200
+
+      - name: Deployment Success Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: 'Deployment Success Notification'
+          text: '서버가 성공적으로 배포되었습니다.'
+          fields: repo,message,commit,author,ref,workflow,job,took,pullRequest
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }} # required
+        if: success()
+
+      - name: Deployment Fail Notification
+        uses: 8398a7/action-slack@v3
+        with:
+          status: ${{ job.status }}
+          author_name: 'Deployment Fail Notification'
+          text: '서버 배포에 실패했습니다.'
+          fields: repo,message,commit,author,ref,workflow,job,took,pullRequest
+          mention: 'U05BT7J8YV8,U05BT2V4C58'
+          if_mention: failure
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_BACKEND_WEBHOOK_URL }} # required
+        if: failure()

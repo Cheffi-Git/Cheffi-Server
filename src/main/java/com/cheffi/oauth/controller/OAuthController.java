@@ -24,9 +24,10 @@ public class OAuthController {
 
 	private final OAuthService oauthService;
 
-	@Tag(name = "SignUp")
-	@Tag(name = "Authentication")
-	@Operation(summary = "소셜 로그인 API", description = "소셜 로그인 API - 소셜 로그인시 받은 ID 토큰으로 로그인을 요청하는 API입니다."
+	@Tag(name = "${swagger.tag.sign-in}")
+	@Tag(name = "${swagger.tag.sign-up}")
+	@Operation(summary = "소셜 로그인 API - 인증 필요",
+		description = "소셜 로그인 API - 소셜 로그인시 받은 ID 토큰으로 로그인을 요청하는 API입니다."
 		+ " 로그인에 성공하면 \"Authorization\" 헤더로 세션 토큰이 발급됩니다.")
 	@Parameter(name = "provider", description = "소셜 로그인 플랫폼", example = "kakao", required = true)
 	@PostMapping("/oauth/login/{provider}")

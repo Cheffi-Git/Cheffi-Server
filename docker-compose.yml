@@ -3,13 +3,8 @@ services:
   app:
     build: .
     ports:
-      - '8080:8080'
-    depends_on:
-      - redis
+      - '80:80'
     environment:
       CHEFFI_DIRECTORY: /app/logs
     volumes:
       - /home/ec2-user/cheffifolder/cheffilog:/app/logs
-  redis:
-    image: redis
-

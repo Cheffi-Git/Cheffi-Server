@@ -10,6 +10,7 @@ import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.BusinessException;
 import com.cheffi.common.constant.Address;
 import com.cheffi.common.domain.BaseTimeEntity;
+import com.cheffi.tag.constant.TagType;
 import com.cheffi.tag.domain.Tag;
 import com.cheffi.user.domain.User;
 
@@ -46,6 +47,9 @@ public class Avatar extends BaseTimeEntity {
 	private Address address;
 	private int cheffiCoinCnt;
 	private int pointCnt;
+	private int followerCnt;
+	private int followingCnt;
+	private int postCnt;
 
 	@NotNull
 	@OneToOne(fetch = FetchType.LAZY)
@@ -64,6 +68,9 @@ public class Avatar extends BaseTimeEntity {
 		this.user = user;
 		this.cheffiCoinCnt = 0;
 		this.pointCnt = 0;
+		this.followerCnt = 0;
+		this.followingCnt = 0;
+		this.postCnt = 0;
 	}
 
 	public void changeAddress(Address address) {
@@ -85,6 +92,14 @@ public class Avatar extends BaseTimeEntity {
 		this.photo = photo;
 	}
 
+	public void changeIntroduction(String introduction) {
+		if (!StringUtils.hasText(introduction))
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+		if (introduction.length() < 10 || introduction.length() > 50)
+			throw new BusinessException(ErrorCode.INVALID_INTRO_LENGTH);
+		this.introduction = introduction;
+	}
+
 	public boolean hasPhoto() {
 		return this.getPhoto() != null;
 	}
@@ -103,5 +118,42 @@ public class Avatar extends BaseTimeEntity {
 
 	public boolean hasTags() {
 		return !avatarTags.isEmpty();
+	}
+
+	public List<Tag> getTags(TagType type) {
+		return this.avatarTags.stream()
+			.map(AvatarTag::getTag)
+			.filter(tag -> tag.hasType(type))
+			.toList();
+	}
+
+	void applyCheffiCoinBy(int value) {
+		if (cheffiCoinCnt + value < 0)
+			throw new BusinessException(ErrorCode.NOT_ENOUGH_CHEFFI_COIN);
+		this.cheffiCoinCnt += value;
+	}
+
+	public boolean hasSameIdWith(Long idToCompare) {
+		return getId().equals(idToCompare);
+	}
+
+	public void addFollower() {
+		this.followerCnt++;
+	}
+
+	public void addFollowing() {
+		this.followingCnt++;
+	}
+
+	public void removeFollower() {
+		this.followerCnt--;
+	}
+
+	public void removeFollowing() {
+		this.followingCnt--;
+	}
+
+	public void addPostCount() {
+		this.postCnt++;
 	}
 }

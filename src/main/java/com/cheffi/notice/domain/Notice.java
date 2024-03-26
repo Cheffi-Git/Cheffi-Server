@@ -27,9 +27,13 @@ public class Notice extends BaseTimeEntity {
     @NotNull
     private String content;
 
+    @NotNull
+    private boolean closed;
+
     @Builder
     public Notice(String title, String content) {
         this.title = title;
         this.content = content;
+        this.closed = false;
     }
 }

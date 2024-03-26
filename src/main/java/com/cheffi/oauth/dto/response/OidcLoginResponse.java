@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import com.cheffi.avatar.domain.Avatar;
 import com.cheffi.avatar.domain.ProfilePhoto;
 import com.cheffi.oauth.model.AuthenticationToken;
 import com.cheffi.oauth.model.UserPrincipal;
@@ -22,40 +23,43 @@ import lombok.Builder;
 @Builder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record OidcLoginResponse(
-	@Schema(description = "이메일", example = "user1234@naver.com")
+	@Schema(description = "이메일", example = "user1234@naver.com", required = true)
 	String email,
-	@Schema(description = "계정 잠김 여부")
+	@Schema(description = "계정 잠김 여부", required = true)
 	boolean locked,
-	@Schema(description = "계정 만료 여부")
+	@Schema(description = "계정 만료 여부", required = true)
 	boolean expired,
-	@Schema(description = "계정 비활성화 여부")
+	@Schema(description = "계정 비활성화 여부", required = true)
 	boolean activated,
 	@Schema(description = "마지막 비밀번호 변경 일자")
 	LocalDateTime lastPwChangedDate,
-	@Schema(description = "사용자 이름", name = "안유진")
+	@Schema(description = "사용자 이름", example = "안유진")
 	String name,
-	@Schema(description = "유저 가입 유형", example = "KAKAO")
+	@Schema(description = "유저 가입 유형", example = "KAKAO", required = true)
 	UserType userType,
-	@Schema(description = "광고 동의 여부")
+	@Schema(description = "광고 동의 여부", required = true)
 	boolean adAgreed,
-	@Schema(description = "개인정보 사용 동의 여부")
+	@Schema(description = "개인정보 사용 동의 여부", required = true)
 	boolean analysisAgreed,
 	@Schema(description = "아바타 식별자 (아바타 = 유저 개념)")
-	Long avatarId,
+	Long id,
+	@Schema(description = "현재 쉐피 코인 개수")
+	int cheffiCoinCount,
+	@Schema(description = "현재 포인트 양")
+	int pointCnt,
 	@Schema(description = "유저 닉네임")
 	String nickname,
 	@Schema(description = "프로필 URL")
 	String photoUrl,
 	@Schema(description = "프로필 등록 완료 여부")
 	boolean profileCompleted,
-	@Schema(description = "유저의 권한")
+	@Schema(description = "유저의 권한", required = true)
 	List<GrantedAuthority> authorities,
-
-	@Schema(description = "신규 유저 여부")
+	@Schema(description = "신규 유저 여부", required = true)
 	boolean isNewUser
 ) {
 
-	public static OidcLoginResponse of(AuthenticationToken token, ProfilePhoto photo, boolean isNewUser) {
+	public static OidcLoginResponse of(AuthenticationToken token, Avatar avatar, ProfilePhoto photo, boolean isNewUser) {
 		UserPrincipal principal = (UserPrincipal)token.getPrincipal();
 		return OidcLoginResponse.builder()
 			.email(principal.getEmail())
@@ -67,7 +71,9 @@ public record OidcLoginResponse(
 			.userType(principal.getUserType())
 			.adAgreed(principal.isAdAgreed())
 			.analysisAgreed(principal.isAnalysisAgreed())
-			.avatarId(principal.getAvatarId())
+			.id(principal.getAvatarId())
+			.cheffiCoinCount(avatar.getCheffiCoinCnt())
+			.pointCnt(avatar.getPointCnt())
 			.nickname(principal.getNickname())
 			.photoUrl(photo != null ? photo.getUrl() : null)
 			.profileCompleted(isProfileCompleted(principal.getAuthorities()))
