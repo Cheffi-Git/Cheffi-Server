@@ -12,12 +12,12 @@ import lombok.Getter;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class QnaDto {
 
-	@Schema(description = "질문")
+	@Schema(description = "질문", required = true)
 	private final String question;
-	@Schema(description = "답변")
+	@Schema(description = "답변", required = true)
 	private final String answer;
-	private final QnaCategory category;
-	@Schema(description = "카테고리명", example = "이용문의")
+	@Schema(required = true) private final QnaCategory category;
+	@Schema(description = "카테고리명", example = "이용문의", required = true)
 	private final String categoryName;
 
 	public QnaDto(String question, String answer, QnaCategory category) {

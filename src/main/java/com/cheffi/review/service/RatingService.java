@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cheffi.avatar.service.AvatarService;
 import com.cheffi.review.domain.Rating;
 import com.cheffi.review.dto.RatingInfoDto;
-import com.cheffi.review.dto.dao.ScoreDto;
+import com.cheffi.review.dto.ScoreDto;
 import com.cheffi.review.dto.request.PutRatingRequest;
 import com.cheffi.review.repository.RatingJpaRepository;
 import com.cheffi.review.repository.RatingRepository;

@@ -1,6 +1,6 @@
 package com.cheffi.review.domain;
 
-import java.math.BigDecimal;
+import org.locationtech.jts.geom.Point;
 
 import com.cheffi.common.constant.DetailedAddress;
 import com.cheffi.common.domain.BaseTimeEntity;
@@ -37,11 +37,8 @@ public class Restaurant extends BaseTimeEntity implements RestaurantInfo {
 
 	private String category;
 
-	@Column(precision = 15, scale = 9)
-	private BigDecimal y;
-
-	@Column(precision = 15, scale = 9)
-	private BigDecimal x;
+	@Column(columnDefinition = "GEOMETRY NOT NULL SRID 4326")
+	private Point coordinates;
 
 	@Enumerated(EnumType.STRING)
 	private RestaurantStatus status;
@@ -62,14 +59,13 @@ public class Restaurant extends BaseTimeEntity implements RestaurantInfo {
 		this.reviewCnt = 0;
 	}
 
-	public Restaurant(String name, DetailedAddress detailedAddress, String category, BigDecimal y, BigDecimal x,
+	public Restaurant(String name, DetailedAddress detailedAddress, String category, Point coordinates,
 		RestaurantStatus status) {
 		String trimmedName = name.trim().replaceAll("\\s+", " ");
 		this.name = trimmedName;
 		this.nameForQuery = trimmedName.replace(" ", "");
 		this.category = category;
-		this.y = y;
-		this.x = x;
+		this.coordinates = coordinates;
 		this.status = status;
 		this.detailedAddress = detailedAddress;
 		this.reviewCnt = 0;
@@ -83,4 +79,5 @@ public class Restaurant extends BaseTimeEntity implements RestaurantInfo {
 	public boolean isRegistered() {
 		return true;
 	}
+
 }

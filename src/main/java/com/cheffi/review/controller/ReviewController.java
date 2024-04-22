@@ -23,7 +23,6 @@ import com.cheffi.common.service.SecurityContextService;
 import com.cheffi.oauth.model.UserPrincipal;
 import com.cheffi.review.dto.AddressSearchRequest;
 import com.cheffi.review.dto.MenuSearchRequest;
-import com.cheffi.review.dto.ReviewCursor;
 import com.cheffi.review.dto.ReviewInfoDto;
 import com.cheffi.review.dto.request.AreaSearchRequest;
 import com.cheffi.review.dto.request.AreaTagSearchRequest;
@@ -99,7 +98,7 @@ public class ReviewController {
 	@Operation(summary = "음식 검색 API - 인증 선택",
 		description = "1. 미 인증시 bookmarked 필드는 모두 false 입니다.")
 	@GetMapping("/menus")
-	public ApiCursorPageResponse<ReviewInfoDto, ReviewCursor> searchReviewsByMenu(
+	public ApiCursorPageResponse<ReviewInfoDto, Long> searchReviewsByMenu(
 		@ParameterObject @Valid MenuSearchRequest request,
 		@AuthenticationPrincipal UserPrincipal principal) {
 		if (securityContextService.hasUserAuthority(principal))
@@ -113,7 +112,7 @@ public class ReviewController {
 	@Operation(summary = "지역 검색 API - 인증 선택",
 		description = "1. 미 인증시 bookmarked 필드는 모두 false 입니다.")
 	@GetMapping("/address")
-	public ApiCursorPageResponse<ReviewInfoDto, ReviewCursor> searchReviewsByAddress(
+	public ApiCursorPageResponse<ReviewInfoDto, Long> searchReviewsByAddress(
 		@ParameterObject @Valid AddressSearchRequest request,
 		@AuthenticationPrincipal UserPrincipal principal) {
 		if (securityContextService.hasUserAuthority(principal))
@@ -126,10 +125,10 @@ public class ReviewController {
 	@Tag(name = "Review")
 	@Operation(summary = "리뷰 등록 API - 인증 필요",
 		description = "인증 필요, "
-			+ "1. 사진의 순서는 클라이언트에서 보낸 순서대로 등록됩니다."
-			+ "2. 태그는 각각 1개 2개 제한을 반드시 지켜야 합니다."
-			+ "3. 프로필을 등록한 유저만 리뷰 등록이 가능합니다."
-			+ "content-type : multipart/form-data 형태로 아래의 형식에 맞춰서 보내면 정상적으로 작동합니다.",
+					  + "1. 사진의 순서는 클라이언트에서 보낸 순서대로 등록됩니다."
+					  + "2. 태그는 각각 1개 2개 제한을 반드시 지켜야 합니다."
+					  + "3. 프로필을 등록한 유저만 리뷰 등록이 가능합니다."
+					  + "content-type : multipart/form-data 형태로 아래의 형식에 맞춰서 보내면 정상적으로 작동합니다.",
 		security = {@SecurityRequirement(name = "session-token")})
 	@SwaggerBody(content = @Content(
 		encoding = @Encoding(name = "request", contentType = MediaType.APPLICATION_JSON_VALUE)))
@@ -148,10 +147,10 @@ public class ReviewController {
 	@Tag(name = "Review")
 	@Operation(summary = "리뷰 수정 API - 인증 필요",
 		description = "인증 필요, "
-			+ "1. 사진의 순서는 클라이언트에서 보낸 순서대로 수정됩니다."
-			+ "2. 태그는 각각 1개 2개 제한을 반드시 지켜야 합니다."
-			+ "3. 프로필을 등록한 유저만 리뷰 수정이 가능합니다."
-			+ "content-type : multipart/form-data 형태로 아래의 형식에 맞춰서 보내면 정상적으로 작동합니다.",
+					  + "1. 사진의 순서는 클라이언트에서 보낸 순서대로 수정됩니다."
+					  + "2. 태그는 각각 1개 2개 제한을 반드시 지켜야 합니다."
+					  + "3. 프로필을 등록한 유저만 리뷰 수정이 가능합니다."
+					  + "content-type : multipart/form-data 형태로 아래의 형식에 맞춰서 보내면 정상적으로 작동합니다.",
 		security = {@SecurityRequirement(name = "session-token")})
 	@SwaggerBody(content = @Content(
 		encoding = @Encoding(name = "request", contentType = MediaType.APPLICATION_JSON_VALUE)))

@@ -2,12 +2,10 @@ package com.cheffi.user.service;
 
 import java.util.Optional;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cheffi.avatar.domain.Avatar;
-import com.cheffi.avatar.repository.AvatarRepository;
+import com.cheffi.avatar.service.AvatarService;
 import com.cheffi.common.aspect.annotation.UpdatePrincipal;
 import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.BusinessException;
@@ -26,7 +24,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserRepository userRepository;
-	private final AvatarRepository avatarRepository;
+	private final AvatarService avatarService;
 	private final RoleService roleService;
 
 	@UpdatePrincipal
@@ -45,12 +43,8 @@ public class UserService {
 		if (request.userType().equals(UserType.LOCAL))
 			throw new BusinessException(ErrorCode.EMAIL_LOGIN_NOT_SUPPORTED);
 		User user = userRepository.save(User.createUser(request));
-		avatarRepository.save(new Avatar(getRandomString() + "쉐피", user));
+		avatarService.createAvatar(user);
 		return user;
-	}
-
-	private String getRandomString() {
-		return RandomStringUtils.randomNumeric(6);
 	}
 
 	public Optional<User> getByEmailWithRoles(String email) {

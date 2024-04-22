@@ -24,8 +24,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,9 +39,10 @@ public class Avatar extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@Size(min = 2, max = 8)
+	@Valid
 	@NotNull
-	private String nickname;
+	@Embedded
+	private Nickname nickname;
 	private String introduction;
 	@Embedded
 	private Address address;
@@ -63,8 +64,8 @@ public class Avatar extends BaseTimeEntity {
 	@OneToMany(mappedBy = "avatar", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<AvatarTag> avatarTags = new ArrayList<>();
 
-	public Avatar(String nickname, User user) {
-		this.nickname = nickname;
+	public Avatar(User user) {
+		this.nickname = Nickname.getRandom();
 		this.user = user;
 		this.cheffiCoinCnt = 0;
 		this.pointCnt = 0;
@@ -79,12 +80,12 @@ public class Avatar extends BaseTimeEntity {
 		this.address = address;
 	}
 
-	public void changeNickname(String nickname) {
-		if (!StringUtils.hasText(nickname))
-			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
-		if (nickname.length() < 2 || nickname.length() > 8)
-			throw new BusinessException(ErrorCode.INVALID_NICKNAME_LENGTH);
-		this.nickname = nickname;
+	public void changeNickname(String newNickname) {
+		this.nickname = nickname.updateOf(newNickname);
+	}
+
+	public String stringNickname() {
+		return nickname.getValue();
 	}
 
 	public void changePhoto(ProfilePhoto photo) {
@@ -93,8 +94,10 @@ public class Avatar extends BaseTimeEntity {
 	}
 
 	public void changeIntroduction(String introduction) {
-		if (!StringUtils.hasText(introduction))
-			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+		if (!StringUtils.hasText(introduction)) {
+			this.introduction = null;
+			return;
+		}
 		if (introduction.length() < 10 || introduction.length() > 50)
 			throw new BusinessException(ErrorCode.INVALID_INTRO_LENGTH);
 		this.introduction = introduction;

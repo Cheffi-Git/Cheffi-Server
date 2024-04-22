@@ -14,27 +14,27 @@ import lombok.Builder;
 @Builder
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record AvatarInfoResponse(
-	@Schema(description = "ID", example = "1")
+	@Schema(description = "ID", example = "1", required = true)
 	Long id,
-	@Schema(description = "닉네임", example = "동구밭에서캔감자")
+	@Schema(description = "닉네임", example = "동구밭에서캔감자", required = true)
 	String nickname,
-	@Schema(description = "프로필 사진 URL")
+	@Schema(description = "프로필 사진 URL", required = true)
 	String photoUrl,
-	@Schema(description = "자기소개", example = "동구밭 과수원길에서 태어난 감자입니다.")
+	@Schema(description = "자기소개", example = "동구밭 과수원길에서 태어난 감자입니다.", required = true)
 	String introduction,
-	@Schema(description = "팔로워 수", example = "16")
+	@Schema(description = "팔로워 수", example = "16", required = true)
 	int follower,
-	@Schema(description = "팔로잉 수", example = "24")
+	@Schema(description = "팔로잉 수", example = "24", required = true)
 	int following,
-	@Schema(description = "게시물 수", example = "24")
+	@Schema(description = "게시물 수", example = "24", required = true)
 	int post,
-	List<TagDto> tags
+	@Schema(required = true) List<TagDto> tags
 ) {
 
 	public static AvatarInfoResponse of(Avatar avatar) {
 		return AvatarInfoResponse.builder()
 			.id(avatar.getId())
-			.nickname(avatar.getNickname())
+			.nickname(avatar.stringNickname())
 			.photoUrl(avatar.getPhoto().getUrl())
 			.introduction(avatar.getIntroduction())
 			.follower(avatar.getFollowerCnt())

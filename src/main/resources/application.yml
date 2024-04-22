@@ -1,9 +1,9 @@
 spring:
   profiles:
     group:
-      "dev": "dev, oauth, s3, actuator, dev-db, regions, swagger"
-      "local": "local, oauth, s3, actuator, regions, swagger"
-      "default": "local, oauth, s3, actuator, regions, swagger"
+      "dev": "dev, oauth, s3, actuator, dev-db, regions, fcm, swagger"
+      "local": "local, oauth, s3, actuator, regions, fcm, swagger"
+      "default": "local, oauth, s3, actuator, regions, fcm, swagger"
   config:
     import: classpath:data/application-regions.yml
 
@@ -24,8 +24,9 @@ spring:
       max-request-size: 20MB
 
 logging:
-  level:
-    com.cheffi.web.kakao.client: debug
+  pattern:
+    dateformat: yyyy-MM-dd HH:mm:ss.SSS,Asia/Seoul
+
 
 springdoc:
   # define target package of swagger scanning

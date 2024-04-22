@@ -8,6 +8,7 @@ import java.util.List;
 import org.springframework.util.Assert;
 
 import com.cheffi.common.domain.BaseTimeEntity;
+import com.cheffi.notification.domain.Device;
 import com.cheffi.user.constant.Password;
 import com.cheffi.user.constant.UserType;
 import com.cheffi.user.dto.UserCreateRequest;
@@ -60,17 +61,21 @@ public class User extends BaseTimeEntity {
 	private boolean adAgreed;
 	@NotNull
 	private boolean analysisAgreed;
+	@NotNull
+	private boolean notificationAllowed;
 	@Embedded
 	private Password password;
 	private LocalDate lastLoginDate;
-	private String fcmToken;
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<UserRole> userRoles = new ArrayList<>();
 
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<Device> devices = new ArrayList<>();
+
 	@Builder
 	private User(String email, boolean locked, boolean expired, boolean withdrawn, boolean activated, String name,
-		UserType userType, Password password) {
+		UserType userType, boolean notificationAllowed, Password password) {
 		this.email = email;
 		this.locked = locked;
 		this.expired = expired;
@@ -78,6 +83,7 @@ public class User extends BaseTimeEntity {
 		this.activated = activated;
 		this.name = name;
 		this.userType = userType;
+		this.notificationAllowed = notificationAllowed;
 		this.password = password;
 	}
 
@@ -109,6 +115,7 @@ public class User extends BaseTimeEntity {
 			.expired(false)
 			.withdrawn(false)
 			.activated(true)
+			.notificationAllowed(false)
 			.password(request.password())
 			.build();
 		createdUser.addRoles(request.roles());

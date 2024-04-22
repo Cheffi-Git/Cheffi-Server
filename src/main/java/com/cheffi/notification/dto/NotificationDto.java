@@ -24,7 +24,7 @@ public record NotificationDto(
 ) {
 
 	public static NotificationDto of(Notification no) {
-		return new NotificationDto(no.getId(), no.getContent(), no.getCategory(), no.isChecked(), no.getCreatedDate());
+		return new NotificationDto(no.getId(), no.getBody(), no.getCategory(), no.isChecked(), no.getCreatedDate());
 	}
 
 }

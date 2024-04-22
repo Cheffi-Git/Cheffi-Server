@@ -12,6 +12,7 @@ import com.cheffi.util.constant.SearchConstant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -19,16 +20,20 @@ import lombok.Getter;
 
 @Getter
 public class AreaSearchRequest implements RedisZSetRequest {
+
 	@Valid
 	private final Address address;
-	@Parameter(description = "검색을 시작할 커서(포함) 최초 조회시는 0을 넣어주세요")
-	@NotNull
+
+	@Parameter(description = "검색을 시작할 커서(포함) 최초 조회시는 입력하지 말아주세요 [Nullable]")
+	@Nullable
 	@PositiveOrZero
 	private final Long cursor;
+
 	@Parameter(description = "검색 사이즈")
 	@NotNull
 	@Range(min = 1, max = 16)
 	private final Integer size;
+
 	@JsonIgnore
 	private final LocalDateTime referenceTime;
 
@@ -41,7 +46,7 @@ public class AreaSearchRequest implements RedisZSetRequest {
 
 	@Override
 	public Long getStart() {
-		return this.cursor;
+		return this.cursor != null ? this.cursor : 0;
 	}
 
 	public ReviewSearchCondition toSearchCondition() {

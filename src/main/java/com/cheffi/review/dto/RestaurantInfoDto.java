@@ -13,13 +13,13 @@ import lombok.Getter;
 @Getter
 public class RestaurantInfoDto {
 
-	@Schema(description = "식당 식별자", example = "3")
+	@Schema(description = "식당 식별자", example = "3", required = true)
 	private final Long id;
-	@Schema(description = "식당 이름", example = "을밀대")
+	@Schema(description = "식당 이름", example = "을밀대", required = true)
 	private final String name;
-	@Schema(description = "맛집 상세주소")
+	@Schema(description = "맛집 상세주소", required = true)
 	private final DetailedAddress address;
-	@Schema(description = "DB 등록 여부")
+	@Schema(description = "DB 등록 여부", required = true)
 	private final boolean registered;
 
 	@Builder

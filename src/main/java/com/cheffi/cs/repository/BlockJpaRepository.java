@@ -33,7 +33,7 @@ public class BlockJpaRepository {
 				new QGetBlockResponse(
 					block.id,
 					avatar.id,
-					avatar.nickname,
+					avatar.nickname.value,
 					profilePhoto.url,
 					block.createdDate
 				)

@@ -15,6 +15,7 @@ import com.cheffi.common.constant.Address;
 import com.cheffi.review.domain.Review;
 import com.cheffi.review.dto.AddressSearchRequest;
 import com.cheffi.review.dto.MenuSearchRequest;
+import com.cheffi.review.dto.QReviewCursor;
 import com.cheffi.review.dto.ReviewCursor;
 import com.cheffi.review.dto.ReviewInfoDto;
 import com.cheffi.review.dto.ReviewSearchCondition;
@@ -59,7 +60,7 @@ public class ReviewJpaRepository {
 			.where(
 				restaurantAddressEq(condition.getAddress())
 			)
-			.leftJoin(review)
+			.join(review)
 			.on(restaurant.eq(review.restaurant));
 
 		Long tagId = condition.getTagId();
@@ -72,38 +73,50 @@ public class ReviewJpaRepository {
 	}
 
 	public List<ReviewInfoDto> findByMenu(MenuSearchRequest request, Long viewerId) {
-		ReviewCursor cursor = request.getCursor();
 
 		JPAQuery<?> common = queryFactory
 			.from(review)
 			.distinct()
 			.innerJoin(review.menus, menu)
-			.on(menu.name.startsWith(request.getMenu()))
-			.where(review.viewCnt.lt(cursor.getCount())
-				.or(review.viewCnt.eq(cursor.getCount()).and(review.id.loe(cursor.getId())))
-			)
+			.where(menu.name.startsWith(request.getMenu()))
 			.orderBy(review.viewCnt.desc(), review.id.desc())
 			.limit(request.getSize() + 1L);
+
+		countCursorCondition(common, request.getCursor());
 
 		return ReviewQueryProcessor.defaultBuilder(viewerId).build()
 			.process(common).fetch();
 	}
 
 	public List<ReviewInfoDto> findByAddress(AddressSearchRequest request, Long viewerId) {
-		ReviewCursor cursor = request.getCursor();
 
 		JPAQuery<?> common = queryFactory
 			.from(review)
 			.leftJoin(review.restaurant, restaurant)
-			.where(review.viewCnt.lt(cursor.getCount())
-					.or(review.viewCnt.eq(cursor.getCount()).and(review.id.loe(cursor.getId())))
-				, restaurantAddressEq(request.getAddress())
-			)
+			.where(restaurantAddressEq(request.getAddress()))
 			.orderBy(review.viewCnt.desc(), review.id.desc())
 			.limit(request.getSize() + 1L);
 
+		countCursorCondition(common, request.getCursor());
+
 		return ReviewQueryProcessor.defaultBuilder(viewerId).build()
 			.process(common).fetch();
+	}
+
+	private void countCursorCondition(JPAQuery<?> query, Long cursor) {
+		if (cursor == null)
+			return;
+		ReviewCursor reviewCursor = getReviewCursor(cursor);
+		query.where(review.viewCnt.lt(reviewCursor.getCount()).or(review.viewCnt.eq(reviewCursor.getCount())
+			.and(review.id.loe(reviewCursor.getId()))));
+	}
+
+	private ReviewCursor getReviewCursor(Long id) {
+		return queryFactory
+			.select(new QReviewCursor(review))
+			.from(review)
+			.where(review.id.eq(id))
+			.fetchOne();
 	}
 
 	public List<ReviewInfoDto> findByWriter(GetMyPageReviewRequest request, Long writerId, Long viewerId) {

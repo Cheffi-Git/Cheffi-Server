@@ -7,7 +7,6 @@ import static org.mockito.BDDMockito.*;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import com.cheffi.common.config.exception.business.BusinessException;
 import com.cheffi.common.constant.Address;
 import com.cheffi.tag.constant.TagType;
 import com.cheffi.tag.domain.Tag;
@@ -26,7 +24,6 @@ import com.cheffi.user.domain.User;
 @ExtendWith(MockitoExtension.class)
 class AvatarTest {
 
-	private static final String AVATAR_NICKNAME = "Nick";
 	private static final String ADDRESS_PROVINCE = "서울시";
 	private static final String ADDRESS_CITY = "종로구";
 	@Mock
@@ -40,7 +37,7 @@ class AvatarTest {
 
 	@BeforeEach
 	void setUp() {
-		avatar = new Avatar(AVATAR_NICKNAME, user);
+		avatar = new Avatar(user);
 	}
 
 	@Nested
@@ -61,45 +58,6 @@ class AvatarTest {
 			assertDoesNotThrow(() -> avatar.changeAddress(address));
 			assertThat(avatar.getAddress()).isEqualTo(address);
 		}
-	}
-
-	@Nested
-	@DisplayName("changeNickname 메서드")
-	class ChangeNickname {
-
-		private static final String NULL_STRING = null;
-		private static final String BLANK_STRING = "";
-		private static final String LENGTH_OVER8 = RandomStringUtils.random(10);
-		private static final String VALID_NICKNAME = RandomStringUtils.random(6);
-
-		@Test
-		@DisplayName("Null인 닉네임이 주어지면 예외를 던진다.")
-		void givenNullNickname() {
-			assertThrows(BusinessException.class,
-				() -> avatar.changeNickname(NULL_STRING));
-		}
-
-		@Test
-		@DisplayName("빈 문자열인 닉네임이 주어지면 예외를 던진다.")
-		void givenBlankNickname() {
-			assertThrows(BusinessException.class,
-				() -> avatar.changeNickname(BLANK_STRING));
-		}
-
-		@Test
-		@DisplayName("8자 초과 닉네임이 주어지면 예외를 던진다.")
-		void givenTooLongNickname() {
-			assertThrows(BusinessException.class,
-				() -> avatar.changeNickname(LENGTH_OVER8));
-		}
-
-		@Test
-		@DisplayName("규칙에 부합하는 닉네임이 주어지면 변경에 성공한다.")
-		void givenValidNickname() {
-			avatar.changeNickname(VALID_NICKNAME);
-			assertThat(avatar.getNickname()).isEqualTo(VALID_NICKNAME);
-		}
-
 	}
 
 	@Nested

@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cheffi.avatar.domain.Avatar;
 import com.cheffi.avatar.domain.Follow;
 import com.cheffi.avatar.dto.GetFollowRequest;
+import com.cheffi.avatar.dto.request.RecommendFollowRequest;
 import com.cheffi.avatar.dto.response.AddFollowResponse;
 import com.cheffi.avatar.dto.response.GetFollowResponse;
 import com.cheffi.avatar.dto.response.RecommendFollowResponse;
@@ -84,8 +85,8 @@ public class FollowService {
 			request.getSize(), GetFollowResponse::cursor);
 	}
 
-	public List<RecommendFollowResponse> recommendFollowee(Long tagId, Long avatarId) {
-		return followJpaRepository.recommendByTag(tagId, avatarId);
+	public List<RecommendFollowResponse> recommendFollowee(RecommendFollowRequest request, Long avatarId) {
+		return followJpaRepository.recommendByTag(request.getTags(), avatarId);
 	}
 
 	public Follow getByFollowerAndFollowee(Avatar follower, Avatar followee) {

@@ -40,6 +40,15 @@ out/
 application-oauth.yml
 application-s3.yml
 application-dev-db.yml
+application-eb-dev-db.yml
+application-fcm.yml
+**/src/main/resources/secret
 
 ### QueryDSL ###
 **/src/main/generated
+
+### Elastic Beanstalk ###
+Dockerrun.aws.json
+
+### Build ###
+.jpb/

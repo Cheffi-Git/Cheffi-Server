@@ -10,6 +10,15 @@ inputs:
   s3-secret:
     description: 's3 secret file'
     required: true
+  fcm-secret-file:
+    description: 'fcm secret file'
+    required: true
+  fcm-secret-file-name:
+    description: 'fcm secret file name'
+    required: true
+  fcm-secret-config:
+    description: 'fcm secret config file'
+    required: true
   dev-db-secret:
     description: 'development db secret file'
   prod-db-secret:
@@ -29,6 +38,20 @@ runs:
     run: | 
       echo $OAUTH_SECRET | base64 --decode > $SECRET_DIR/$OAUTH_SECRET_DIR_FILE_NAME
       echo $S3_SECRET | base64 --decode > $SECRET_DIR/$S3_SECRET_DIR_FILE_NAME
+
+  - name: Copy FCM secrets
+    env:
+      FCM_SECRET: ${{ inputs.fcm-secret-file }}
+      FCM_SECRET_FILE_NAME : ${{ inputs.fcm-secret-file-name }}
+      FCM_SECRET_DIR: src/main/resources/secret
+      FCM_SECRET_CONFIG: ${{ inputs.fcm-secret-config }}
+      FCM_SECRET_CONFIG_FILE_NAME: application-fcm.yml
+      FCM_SECRET_CONFIG_DIR: src/main/resources
+    shell: bash
+    run: |
+      mkdir $FCM_SECRET_DIR
+      echo $FCM_SECRET | base64 --decode > $FCM_SECRET_DIR/$FCM_SECRET_FILE_NAME
+      echo $FCM_SECRET_CONFIG | base64 --decode > $FCM_SECRET_CONFIG_DIR/$FCM_SECRET_CONFIG_FILE_NAME
 
   - name: Copy Dev DB Secrets
     if: inputs.profile == 'dev'

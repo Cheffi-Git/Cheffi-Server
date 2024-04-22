@@ -1,6 +1,6 @@
 package com.cheffi.review.domain;
 
-import java.math.BigDecimal;
+import org.locationtech.jts.geom.Point;
 
 import com.cheffi.common.code.ErrorCode;
 import com.cheffi.common.config.exception.business.BusinessException;
@@ -42,10 +42,8 @@ public class RestaurantData implements RestaurantInfo {
 	@NotNull
 	private String category;
 	private boolean registered;
-	@Column(precision = 15, scale = 9)
-	private BigDecimal y;
-	@Column(precision = 15, scale = 9)
-	private BigDecimal x;
+	@Column(columnDefinition = "GEOMETRY NOT NULL SRID 4326")
+	private Point coordinates;
 	@NotNull
 	@Enumerated(EnumType.STRING)
 	private RestaurantStatus status;
@@ -62,6 +60,7 @@ public class RestaurantData implements RestaurantInfo {
 		if (registered)
 			throw new BusinessException(ErrorCode.RESTAURANT_ALREADY_REGISTERED);
 		registered = true;
-		return new Restaurant(name, detailedAddress, category, y, x, status);
+		return new Restaurant(name, detailedAddress, category, coordinates, status);
 	}
+
 }

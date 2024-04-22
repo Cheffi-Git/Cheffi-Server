@@ -10,7 +10,7 @@ import lombok.Getter;
 @Getter
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ReviewWriterInfoDto {
-	@Schema(description = "리뷰 작성자 ID", example = "1")
+	@Schema(description = "리뷰 작성자 ID", example = "1", required = true)
 	private final Long id;
 	@Schema(description = "리뷰 작성자 닉네임", example = "닉네임1234")
 	private final String nickname;
@@ -18,10 +18,11 @@ public class ReviewWriterInfoDto {
 	private final String photoUrl;
 	@Schema(description = "리뷰 작성자 소개글", example = "안녕하세요. 리뷰 작성자입니다.")
 	private final String introduction;
-	@Schema(description = "조회자(유저)가 작성자인지 여부", example = "false")
+	@Schema(description = "조회자(유저)가 작성자인지 여부", example = "false", required = true)
 	private boolean writtenByViewer;
 
-	private ReviewWriterInfoDto(Long id, String nickname, String photoUrl, String introduction, boolean writtenByViewer) {
+	private ReviewWriterInfoDto(Long id, String nickname, String photoUrl, String introduction,
+		boolean writtenByViewer) {
 		this.id = id;
 		this.nickname = nickname;
 		this.photoUrl = photoUrl;
@@ -30,7 +31,7 @@ public class ReviewWriterInfoDto {
 	}
 
 	public static ReviewWriterInfoDto of(Avatar avatar, boolean writtenByViewer) {
-		return new ReviewWriterInfoDto(avatar.getId(), avatar.getNickname(), avatar.getPhoto().getUrl(),
+		return new ReviewWriterInfoDto(avatar.getId(), avatar.stringNickname(), avatar.getPhoto().getUrl(),
 			avatar.getIntroduction(), writtenByViewer);
 	}
 

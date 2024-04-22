@@ -17,6 +17,7 @@ import com.cheffi.tag.constant.TagType;
 import com.cheffi.tag.domain.Tag;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -45,6 +46,7 @@ public class Review extends BaseTimeEntity {
 	private String title;
 
 	@NotNull
+	@Column(length = 1000)
 	private String text;
 	private int goodRatingCnt;
 	private int averageRatingCnt;

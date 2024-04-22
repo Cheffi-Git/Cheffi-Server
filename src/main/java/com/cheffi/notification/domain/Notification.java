@@ -28,7 +28,10 @@ public class Notification extends BaseEntity {
 	private Long id;
 
 	@NotNull
-	private String content;
+	private String body;
+
+	@NotNull
+	private String title;
 
 	@NotNull
 	@Enumerated(EnumType.STRING)
@@ -42,7 +45,8 @@ public class Notification extends BaseEntity {
 	private Avatar target;
 
 	private Notification(NotificationCategory category, Avatar target, Object... arg) {
-		this.content = category.getContent(arg);
+		this.body = category.getBody(arg);
+		this.title = category.getTitle(arg);
 		this.category = category;
 		this.target = target;
 		this.checked = false;

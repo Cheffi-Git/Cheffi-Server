@@ -9,11 +9,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record TagDto(
-	@Schema(description = "태그의 식별자")
+	@Schema(description = "태그의 식별자", required = true)
 	Long id,
-	@Schema(description = "태그의 이름")
+	@Schema(description = "태그의 이름", required = true)
 	String name,
-	@Schema(description = "태그의 타입")
+	@Schema(description = "태그의 타입", required = true)
 	TagType type
 ) {
 

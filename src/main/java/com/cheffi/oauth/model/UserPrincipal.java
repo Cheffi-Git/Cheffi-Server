@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.cheffi.avatar.domain.Avatar;
+import com.cheffi.avatar.domain.Nickname;
 import com.cheffi.avatar.dto.adapter.SelfAvatarInfo;
 import com.cheffi.user.constant.UserType;
 import com.cheffi.user.domain.User;
@@ -35,11 +36,10 @@ public class UserPrincipal implements UserDetails, Serializable {
 	private final UserType userType;
 	private boolean adAgreed;
 	private boolean analysisAgreed;
-	private String fcmToken;
 
 	// Avatar
 	private final Long avatarId;
-	private String nickname;
+	private Nickname nickname;
 
 	// Role
 	private List<SimpleGrantedAuthority> authorities;
@@ -56,7 +56,6 @@ public class UserPrincipal implements UserDetails, Serializable {
 			.userType(user.getUserType())
 			.adAgreed(user.isAdAgreed())
 			.analysisAgreed(user.isAnalysisAgreed())
-			.fcmToken(user.getFcmToken())
 			.avatarId(avatar.getId())
 			.nickname(avatar.getNickname())
 			.authorities(new ArrayList<>(authorities))
@@ -68,7 +67,6 @@ public class UserPrincipal implements UserDetails, Serializable {
 		this.name = info.name();
 		this.adAgreed = info.adAgreed();
 		this.analysisAgreed = info.analysisAgreed();
-		this.fcmToken = info.fcmToken();
 		if (info.authorities() != null)
 			this.authorities = info.authorities().stream().map((SimpleGrantedAuthority::new)).toList();
 		return this;
@@ -114,6 +112,10 @@ public class UserPrincipal implements UserDetails, Serializable {
 		return activated;
 	}
 
+	public String stringNickname() {
+		return nickname.getValue();
+	}
+
 	/**
 	 * TODO 테스트용 토큰 발급을 위한 메서드로 프로덕션에서는 반드시 비활성화 필요
 	 */
@@ -130,9 +132,8 @@ public class UserPrincipal implements UserDetails, Serializable {
 			.userType(UserType.KAKAO)
 			.adAgreed(true)
 			.analysisAgreed(false)
-			.fcmToken("fcm-token")
 			.avatarId(34L)
-			.nickname("댕댕이")
+			.nickname(Nickname.getRandom())
 			.authorities(authorities)
 			.build();
 	}

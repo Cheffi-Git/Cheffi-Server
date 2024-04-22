@@ -12,6 +12,7 @@ import com.cheffi.util.constant.SearchConstant;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -23,8 +24,8 @@ public class AreaTagSearchRequest implements RedisZSetRequest {
 	@Valid
 	private final Address address;
 
-	@Parameter(description = "검색을 시작할 커서(포함) 최초 조회시는 0을 넣어주세요")
-	@NotNull
+	@Parameter(description = "검색을 시작할 커서(포함) 최초 조회시는 입력하지 말아주세요 [Nullable]")
+	@Nullable
 	@PositiveOrZero
 	private final Long cursor;
 
@@ -36,6 +37,7 @@ public class AreaTagSearchRequest implements RedisZSetRequest {
 	@Parameter(name = "tag_id", description = "검색할 태그의 인덱스, 음식 태그만 입력 가능합니다.", example = "15")
 	@NotNull
 	private final Long tagId;
+
 	@JsonIgnore
 	private final LocalDateTime referenceTime;
 
@@ -49,7 +51,7 @@ public class AreaTagSearchRequest implements RedisZSetRequest {
 
 	@Override
 	public Long getStart() {
-		return this.cursor;
+		return this.cursor != null ? this.cursor : 0;
 	}
 
 	public ReviewSearchCondition toSearchCondition() {

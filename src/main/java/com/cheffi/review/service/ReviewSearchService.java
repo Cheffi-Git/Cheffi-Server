@@ -6,7 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.cheffi.avatar.domain.Avatar;
 import com.cheffi.avatar.service.PurchasedItemService;
 import com.cheffi.common.code.ErrorCode;
-import com.cheffi.common.config.exception.business.AuthenticationException;
 import com.cheffi.common.config.exception.business.BusinessException;
 import com.cheffi.common.dto.CursorPage;
 import com.cheffi.common.dto.RedisZSetRequest;
@@ -14,7 +13,6 @@ import com.cheffi.region.service.RegionService;
 import com.cheffi.review.domain.Review;
 import com.cheffi.review.dto.AddressSearchRequest;
 import com.cheffi.review.dto.MenuSearchRequest;
-import com.cheffi.review.dto.ReviewCursor;
 import com.cheffi.review.dto.ReviewInfoDto;
 import com.cheffi.review.dto.ReviewSearchCondition;
 import com.cheffi.review.dto.ReviewTuples;
@@ -46,8 +44,9 @@ public class ReviewSearchService {
 		Review review = getReviewFromDB(reviewId);
 
 		Avatar writer = review.getWriter();
-		if (review.isLocked())
-			throw new AuthenticationException(ErrorCode.ANONYMOUS_USER_CANNOT_ACCESS_LOCKED_REVIEW);
+		// TODO 잠금 로직 다시 활성화 필요
+		// if (review.isLocked())
+		// 	throw new AuthenticationException(ErrorCode.ANONYMOUS_USER_CANNOT_ACCESS_LOCKED_REVIEW);
 
 		viewHistoryService.readReviewAnonymous(reviewId);
 
@@ -60,9 +59,10 @@ public class ReviewSearchService {
 		Avatar writer = review.getWriter();
 
 		if (!writer.hasSameIdWith(viewerId)) {
-			if (review.isLocked() && !purchasedItemService.hasUnlocked(viewerId, reviewId)) {
-				throw new BusinessException(ErrorCode.REVIEW_NOT_UNLOCKED);
-			}
+			// TODO 잠금 로직 다시 활성화 필요
+			// if (review.isLocked() && !purchasedItemService.hasUnlocked(viewerId, reviewId)) {
+			// 	throw new BusinessException(ErrorCode.REVIEW_NOT_UNLOCKED);
+			// }
 			viewHistoryService.readReview(viewerId, reviewId);
 		}
 
@@ -80,7 +80,7 @@ public class ReviewSearchService {
 	public CursorPage<ReviewInfoDto, Integer> searchReviewsByArea(AreaSearchRequest request, Long viewerId) {
 		ReviewTuples reviewTuples = getTrendingReviewTuples(request, request.toSearchCondition());
 		return CursorPage.of(
-			reviewService.getInfoById(reviewTuples.toIdList(), request.getCursor(), viewerId),
+			reviewService.getInfoById(reviewTuples.toIdList(), request.getStart(), viewerId),
 			request.getSize(),
 			ReviewInfoDto::getNumber,
 			request.getReferenceTime());
@@ -89,30 +89,29 @@ public class ReviewSearchService {
 	public CursorPage<ReviewInfoDto, Integer> searchReviewsByAreaAndTag(AreaTagSearchRequest request, Long viewerId) {
 		tagService.verifyTag(request.getTagId(), TagType.FOOD);
 		ReviewTuples reviewTuples = getTrendingReviewTuples(request, request.toSearchCondition());
-
 		return CursorPage.of(
-			reviewService.getInfoById(reviewTuples.toIdList(), request.getCursor(), viewerId),
+			reviewService.getInfoById(reviewTuples.toIdList(), request.getStart(), viewerId),
 			request.getSize(),
 			ReviewInfoDto::getNumber,
 			request.getReferenceTime());
 	}
 
-	public CursorPage<ReviewInfoDto, ReviewCursor> searchByMenu(MenuSearchRequest request, Long viewerId) {
+	public CursorPage<ReviewInfoDto, Long> searchByMenu(MenuSearchRequest request, Long viewerId) {
 		return CursorPage.of(
 			reviewService.getByMenu(request, viewerId),
 			request.getSize(),
-			ReviewCursor::of
+			ReviewInfoDto::getId
 		);
 	}
 
-	public CursorPage<ReviewInfoDto, ReviewCursor> searchByAddress(AddressSearchRequest request, Long viewerId) {
+	public CursorPage<ReviewInfoDto, Long> searchByAddress(AddressSearchRequest request, Long viewerId) {
 		if (!regionService.contains(request.getAddress()))
 			throw new BusinessException(ErrorCode.ADDRESS_NOT_EXIST);
 
 		return CursorPage.of(
 			reviewService.getByAddress(request, viewerId),
 			request.getSize(),
-			ReviewCursor::of
+			ReviewInfoDto::getId
 		);
 	}
 
@@ -127,13 +126,15 @@ public class ReviewSearchService {
 		return reviewTrendingService.calculateTrendingReviews(condition, request);
 	}
 
-	public CursorPage<ReviewInfoDto, Long> searchByWriter(GetMyPageReviewRequest request, Long writerId, Long viewerId) {
+	public CursorPage<ReviewInfoDto, Long> searchByWriter(GetMyPageReviewRequest request, Long writerId,
+		Long viewerId) {
 		return CursorPage.of(reviewService.getByWriter(request, writerId, viewerId),
 			request.getSize(),
 			ReviewInfoDto::getId);
 	}
 
-	public CursorPage<ReviewInfoDto, Long> searchByBookmarks(GetMyPageReviewRequest request, Long ownerId, Long viewerId) {
+	public CursorPage<ReviewInfoDto, Long> searchByBookmarks(GetMyPageReviewRequest request, Long ownerId,
+		Long viewerId) {
 		return CursorPage.of(reviewService.getByBookmarks(request, ownerId, viewerId),
 			request.getSize(),
 			ReviewInfoDto::getCursor);

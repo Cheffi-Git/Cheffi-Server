@@ -41,6 +41,7 @@ public enum ErrorCode {
 	PROFILE_NOT_COMPLETED(HttpStatus.BAD_REQUEST, "M-010", "해당 계정의 프로필 등록이 완료된 상태가 아닙니다."),
 	EMAIL_IS_REGISTER_WITH_ANOTHER_PROVIDER(HttpStatus.BAD_REQUEST, "M-011", "같은 이메일이 다른 소셜 로그인 플랫폼으로 가입되어 있습니다."),
 	INVALID_INTRO_LENGTH(HttpStatus.BAD_REQUEST, "M-012", "자기소개의 길이가 올바르지 않습니다. [최소 10자, 최대 50자]"),
+	CANNOT_CHANGE_NICKNAME_YET(HttpStatus.BAD_REQUEST, "M-013", "닉네임을 아직 변경할 수 없습니다."),
 
 	//팔로우
 	ALREADY_FOLLOWED(HttpStatus.BAD_REQUEST, "FW-001", "해당 아바타는 이미 팔로우 중입니다."),
@@ -51,7 +52,7 @@ public enum ErrorCode {
 	RESTAURANT_NOT_EXIST(HttpStatus.BAD_REQUEST, "R-001", "식별자에 해당하는 식당이 없습니다."),
 	TOO_MANY_MENUS(HttpStatus.BAD_REQUEST, "R-002", "한 리뷰의 메뉴는 5개를 초과할 수 없습니다."),
 	RESTAURANT_DATA_NOT_EXIST(HttpStatus.BAD_REQUEST, "R-003", "공공 데이터에 "
-		+ "식별자에 해당하는 식당 데이터가 없습니다."),
+															   + "식별자에 해당하는 식당 데이터가 없습니다."),
 	RESTAURANT_ALREADY_REGISTERED(HttpStatus.BAD_REQUEST, "R-004", "해당 데이터로 생성된 식당이 이미 존재합니다."),
 	REVIEW_NOT_EXIST(HttpStatus.BAD_REQUEST, "R-005", "해당 식별자는 올바른 리뷰의 식별자가 아닙니다."),
 	REVIEW_NOT_UNLOCKED(HttpStatus.BAD_REQUEST, "R-006", "유저가 해당 리뷰를 구매하지 않았습니다."),

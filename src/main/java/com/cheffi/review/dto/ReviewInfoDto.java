@@ -1,7 +1,8 @@
 package com.cheffi.review.dto;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Random;
 
 import com.cheffi.review.constant.ReviewStatus;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -20,34 +21,37 @@ import lombok.NoArgsConstructor;
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ReviewInfoDto {
 
-	@Schema(description = "리뷰 ID", example = "1")
+	@Schema(description = "리뷰 ID", example = "1", required = true)
 	private Long id;
-	@Schema(description = "리뷰 제목", example = "태초동에 생긴 맛집!!")
+	@Schema(description = "리뷰 제목", example = "태초동에 생긴 맛집!!", required = true)
 	private String title;
-	@Schema(description = "리뷰의 적힌 본문 내용", example = "초밥 태초세트 추천해요")
+	@Schema(description = "리뷰의 적힌 본문 내용", example = "초밥 태초세트 추천해요", required = true)
 	private String text;
-	@Schema(description = "리뷰의 사진 URL")
+	@Schema(description = "리뷰의 사진 URL", required = true)
 	private ReviewPhotoInfoDto photo;
-	@Schema(description = "잠금까지 남은 시간 (ms 단위)", example = "86399751")
+	@Schema(description = "잠금까지 남은 시간 (ms 단위)", example = "86399751", required = true)
 	private Long timeLeftToLock;
-	@Schema(description = "잠금 여부", example = "true")
+	@Schema(description = "잠금 여부", example = "true", required = true)
 	private Boolean locked;
-	@Schema(description = "누적 조회수", example = "100")
+	@Schema(description = "누적 조회수", example = "100", required = true)
 	private Integer viewCount;
 	@Schema(description = "랭킹(커서)", example = "10")
 	private Integer number;
-	@Schema(description = "리뷰의 현재 상태", example = "ACTIVE")
+	@Schema(description = "리뷰의 현재 상태", example = "ACTIVE", required = true)
 	private ReviewStatus reviewStatus;
-	@Schema(description = "작성자 여부", example = "false")
+	@Schema(description = "작성자 여부", example = "false", required = true)
 	private Boolean writtenByUser;
-	@Schema(description = "북마크 여부", example = "true")
+	@Schema(description = "북마크 여부", example = "true", required = true)
 	private Boolean bookmarked;
-	@Schema(description = "구매 여부", example = "true")
+	@Schema(description = "구매 여부", example = "true", required = true)
 	private Boolean purchased;
-	@Schema(description = "리뷰의 활성화 여부 'ACTIVE' 상태이면 true", example = "true")
+	@Schema(description = "리뷰의 활성화 여부 'ACTIVE' 상태이면 true", example = "true", required = true)
 	private Boolean active;
 	@JsonIgnore
 	private Long cursor;
+
+	private static final List<Long> LEFT_TIMES_TO_LOCK = List.of(305000L, 5000L, 86400000L, 37800000L);
+	private static final Random RANDOM = new Random();
 
 	@QueryProjection
 	public ReviewInfoDto(Long id, String title, String text, ReviewPhotoInfoDto photo,
@@ -61,8 +65,11 @@ public class ReviewInfoDto {
 		this.title = title;
 		this.text = text;
 		this.photo = photo;
-		this.timeLeftToLock = Duration.between(LocalDateTime.now(), timeToLock).toMillis();
-		this.locked = timeLeftToLock <= 0;
+		this.timeLeftToLock = LEFT_TIMES_TO_LOCK.get(RANDOM.nextInt(LEFT_TIMES_TO_LOCK.size()));
+		this.locked = false;
+		// TODO 배포시 아래 로직으로 변경 필요
+		// this.timeLeftToLock = Duration.between(LocalDateTime.now(), timeToLock).toMillis();
+		// this.locked = timeLeftToLock <= 0;
 		this.bookmarked = bookmarked;
 		this.viewCount = viewCount;
 		this.writtenByUser = writtenByUser;

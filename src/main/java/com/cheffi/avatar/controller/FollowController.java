@@ -12,17 +12,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cheffi.avatar.dto.GetFollowRequest;
 import com.cheffi.avatar.dto.request.DeleteFollowRequest;
 import com.cheffi.avatar.dto.request.PostFollowRequest;
+import com.cheffi.avatar.dto.request.RecommendFollowRequest;
 import com.cheffi.avatar.dto.response.AddFollowResponse;
 import com.cheffi.avatar.dto.response.GetFollowResponse;
 import com.cheffi.avatar.dto.response.RecommendFollowResponse;
 import com.cheffi.avatar.dto.response.UnfollowResponse;
 import com.cheffi.avatar.service.FollowService;
+import com.cheffi.common.dto.ValidationSequence;
 import com.cheffi.common.response.ApiCursorPageResponse;
 import com.cheffi.common.response.ApiResponse;
 import com.cheffi.common.service.SecurityContextService;
@@ -104,14 +105,14 @@ public class FollowController {
 	@Tag(name = "${swagger.tag.main}")
 	@Operation(summary = "태그별 팔로우 추천 목록 조회 API - 인증 필요",
 		description = "태그별 팔로우 추천 조회 12개의 데이터만 제공합니다. "
-			+ "메인 페이지용 API 입니다. - 인증 필요",
+					  + "메인 페이지용 API 입니다. - 인증 필요",
 		security = {@SecurityRequirement(name = "session-token")})
 	@PreAuthorize("hasRole('USER')")
 	@GetMapping("/recommend/tags")
 	public ApiResponse<List<RecommendFollowResponse>> recommendFollowee(
 		@AuthenticationPrincipal UserPrincipal principal,
-		@RequestParam("tag") @Positive Long tagId) {
-		return ApiResponse.success(followService.recommendFollowee(tagId, principal.getAvatarId()));
+		@ParameterObject @Validated(ValidationSequence.class) RecommendFollowRequest request) {
+		return ApiResponse.success(followService.recommendFollowee(request, principal.getAvatarId()));
 	}
 
 }

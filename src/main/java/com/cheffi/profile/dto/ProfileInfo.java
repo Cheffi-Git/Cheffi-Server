@@ -17,9 +17,9 @@ import lombok.Getter;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonNaming(value = PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class ProfileInfo {
-	@Schema(description = "ID", example = "1")
+	@Schema(description = "ID", example = "1", required = true)
 	private final Long id;
-	@Schema(description = "닉네임", example = "동구밭에서캔감자")
+	@Schema(description = "닉네임")
 	private final String nickname;
 	@Schema(description = "자기소개", example = "동구밭 과수원길에서 태어난 감자입니다.")
 	private final String introduction;
@@ -44,7 +44,7 @@ public class ProfileInfo {
 	@QueryProjection
 	public ProfileInfo(Avatar avatar, String photoUrl, Boolean following, Boolean blocking, List<Tag> tags) {
 		this.id = avatar.getId();
-		this.nickname = avatar.getNickname();
+		this.nickname = avatar.stringNickname();
 		this.introduction = avatar.getIntroduction();
 		this.followerCount = avatar.getFollowerCnt();
 		this.followingCount = avatar.getFollowingCnt();

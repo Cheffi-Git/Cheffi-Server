@@ -12,6 +12,6 @@ public class FollowEvent {
 
 	public FollowEvent(Avatar target, Avatar subject) {
 		this.targetId = target.getId();
-		this.subjectNickname = subject.getNickname();
+		this.subjectNickname = subject.stringNickname();
 	}
 }

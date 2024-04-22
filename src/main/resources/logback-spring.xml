@@ -17,11 +17,11 @@
         <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
             <file>${CHEFFI_DIRECTORY}/cheffilog/cheffi-app.log</file>
             <encoder>
-                <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+                <pattern>%d{HH:mm:ss.SSS, ${logback.timezone:-Asia/Seoul}} [%thread] %-5level %logger{36} - %msg%n</pattern>
                 <charset>utf8</charset>
             </encoder>
             <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-                <fileNamePattern>${CHEFFI_DIRECTORY}/cheffilog/backup/cheffi-app-%d{yyyy-MM-dd}.%i.log.zip</fileNamePattern>
+                <fileNamePattern>${CHEFFI_DIRECTORY}/cheffilog/backup/cheffi-app-%d{yyyy-MM-dd, ${logback.timezone:-Asia/Seoul}}.%i.log.zip</fileNamePattern>
                 <maxFileSize>100MB</maxFileSize>
                 <maxHistory>30</maxHistory>
                 <totalSizeCap>3GB</totalSizeCap>

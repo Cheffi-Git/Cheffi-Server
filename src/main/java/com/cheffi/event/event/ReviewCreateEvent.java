@@ -16,7 +16,7 @@ public class ReviewCreateEvent {
 
 	public ReviewCreateEvent(Avatar writer, Review review, Authorities authorities) {
 		this.writerId = writer.getId();
-		this.nickname = writer.getNickname();
+		this.nickname = writer.stringNickname();
 		this.title = review.getTitle();
 		this.authorities = authorities;
 	}

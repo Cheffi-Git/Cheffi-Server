@@ -34,8 +34,6 @@ public class AvatarService {
 	@UpdatePrincipal
 	@Transactional
 	public SelfAvatarInfo updateNickname(Long avatarId, String nickname) {
-		if (nickname.contains("쉐피"))
-			throw new BusinessException(ErrorCode.NICKNAME_CONTAINS_BANNED_WORDS);
 		if (isNicknameInUse(nickname))
 			throw new BusinessException(ErrorCode.NICKNAME_ALREADY_IN_USE);
 		Avatar avatar = getById(avatarId);
@@ -53,6 +51,19 @@ public class AvatarService {
 
 	public boolean isNicknameInUse(String nickname) {
 		return avatarRepository.existsByNickname(nickname);
+	}
+
+	public Avatar createAvatar(User user) {
+		Avatar avatar = new Avatar(user);
+		for (int i = 0; i < 10; i++) {
+			if (!isNicknameInUse(avatar.stringNickname()))
+				break;
+			avatar = new Avatar(user);
+		}
+		if (isNicknameInUse(avatar.stringNickname()))
+			throw new BusinessException(ErrorCode.INTERNAL_SERVER_ERROR);
+		profilePhotoService.addDefaultPhoto(avatar);
+		return avatarRepository.save(avatar);
 	}
 
 	@UpdatePrincipal
@@ -86,8 +97,7 @@ public class AvatarService {
 	public boolean checkIfCompleteProfile(Long avatarId) {
 		Avatar avatar = getByIdWithTagsAndPhoto(avatarId);
 		return avatar.hasTags() &&
-			avatar.hasPhoto() &&
-			!avatar.getNickname().contains("쉐피");
+			   avatar.hasPhoto();
 	}
 
 	public AvatarInfoResponse getAvatarInfo(Long avatarId) {

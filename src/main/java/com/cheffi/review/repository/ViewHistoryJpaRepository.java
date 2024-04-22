@@ -1,6 +1,5 @@
 package com.cheffi.review.repository;
 
-import static com.cheffi.review.domain.QReview.*;
 import static com.cheffi.review.domain.QViewHistory.*;
 
 import java.time.LocalDateTime;
@@ -8,8 +7,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.cheffi.review.dto.dao.QScoreDto;
-import com.cheffi.review.dto.dao.ScoreDto;
+import com.cheffi.review.dto.QScoreDto;
+import com.cheffi.review.dto.ScoreDto;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -28,18 +27,16 @@ public class ViewHistoryJpaRepository {
 	}
 
 	public List<ScoreDto> countBetween(List<Long> ids, LocalDateTime from, LocalDateTime to) {
-		JPAQuery<ScoreDto> select = queryFactory.from(review)
-			.leftJoin(review.viewHistories, viewHistory)
-			.on(reviewIn(ids),
-				createdBetween(from, to))
-			.groupBy(review.id)
-			.select(new QScoreDto(review.id, viewHistory.count().intValue()));
+		JPAQuery<ScoreDto> select = queryFactory.from(viewHistory)
+			.where(reviewIn(ids), createdBetween(from, to))
+			.groupBy(viewHistory.review.id)
+			.select(new QScoreDto(viewHistory.review.id, viewHistory.id.count().intValue()));
 
 		return select.fetch();
 	}
 
 	private BooleanExpression reviewIn(List<Long> ids) {
-		return review.id.in(ids);
+		return viewHistory.review.id.in(ids);
 	}
 
 	private BooleanExpression createdBetween(LocalDateTime from, LocalDateTime to) {

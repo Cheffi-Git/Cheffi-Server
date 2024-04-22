@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class DetailedAddress extends Address {
 
-	@Schema(description = "지번 주소", example = "염리동 111")
+	@Schema(description = "지번 주소", example = "염리동 111", nullable = true)
 	@JsonIgnore
 	private String lotNumber;
 

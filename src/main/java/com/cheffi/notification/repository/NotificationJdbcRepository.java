@@ -35,7 +35,7 @@ public class NotificationJdbcRepository {
 				Notification notification = notifications.get(i);
 				ps.setString(1, notification.getCategory().toString());
 				ps.setBoolean(2, false);
-				ps.setString(3, notification.getContent());
+				ps.setString(3, notification.getBody());
 				ps.setLong(4, notification.getTarget().getId());
 				ps.setTimestamp(5, Timestamp.valueOf(LocalDateTime.now()));
 				ps.setTimestamp(6, Timestamp.valueOf(LocalDateTime.now()));
