@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cheffi.common.response.ApiResponse;
+import com.cheffi.review.domain.Restaurant;
 import com.cheffi.review.dto.RestaurantInfoDto;
 import com.cheffi.review.dto.request.RegisterRestaurantRequest;
 import com.cheffi.review.service.RestaurantInfoService;
@@ -49,7 +50,7 @@ public class RestaurantController {
 	@Operation(summary = "식당 등록 신청 API - 인증 필수",
 	description = "사용자에 의한 식당 등록 API입니다. "
 		+ "임시적으로 식당이 등록되며 관리자에 의해 최종 등록됩니다.")
-	@PreAuthorize("hasRole('USER') and !hasAuthority('NO_PROFILE')")
+	@PreAuthorize("!hasAuthority('NO_PROFILE')")
 	@PostMapping
 	public ApiResponse<Long> registerTempRestaurant(@Valid @RequestBody RegisterRestaurantRequest request) {
 		return ApiResponse.success(restaurantService.registerTempRestaurant(request));
