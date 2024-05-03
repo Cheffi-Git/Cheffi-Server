@@ -6,7 +6,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import com.cheffi.event.event.ReviewReadEvent;
-import com.cheffi.review.service.ViewHistoryService;
+import com.cheffi.review.service.ViewCountingService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -14,18 +14,12 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class ReviewReadEventListener {
 
-	private final ViewHistoryService viewHistoryService;
-
-	@Async
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, classes = ReviewReadEvent.class)
-	public void onReadingSaveViewHistory(ReviewReadEvent event) {
-		viewHistoryService.saveViewHistory(event);
-	}
+	private final ViewCountingService viewCountingService;
 
 	@Async
 	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, classes = ReviewReadEvent.class)
 	public void onReadingIncreaseViewCount(ReviewReadEvent event) {
-		viewHistoryService.increaseViewCount(event);
+		viewCountingService.sendMessage(event);
 	}
 
 }

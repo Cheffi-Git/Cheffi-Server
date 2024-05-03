@@ -101,6 +101,9 @@ dependencies {
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     testImplementation("io.projectreactor:reactor-test")
+
+    // AQMP
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
 }
 
 kapt {

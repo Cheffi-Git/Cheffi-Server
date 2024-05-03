@@ -32,6 +32,7 @@ public class ReviewService {
 			.orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_EXIST));
 	}
 
+	@Transactional
 	public Review getByIdForUpdate(Long reviewId) {
 		return reviewRepository.findByIdForUpdate(reviewId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.REVIEW_NOT_EXIST));

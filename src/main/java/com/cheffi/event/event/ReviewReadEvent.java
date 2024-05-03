@@ -1,5 +1,7 @@
 package com.cheffi.event.event;
 
+import java.io.Serializable;
+
 import org.springframework.util.Assert;
 
 import com.cheffi.review.domain.Review;
@@ -7,7 +9,7 @@ import com.cheffi.review.domain.Review;
 import lombok.Getter;
 
 @Getter
-public class ReviewReadEvent {
+public class ReviewReadEvent implements Serializable {
 
 	private final Long reviewId;
 	private final Long viewerId;
