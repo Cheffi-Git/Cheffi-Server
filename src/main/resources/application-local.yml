@@ -10,6 +10,11 @@ spring:
         # show formatted sql
         format_sql: true
         show_sql: true
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: username
+    password: password
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
