@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cheffi.common.response.ApiResponse;
+import com.cheffi.review.domain.Restaurant;
 import com.cheffi.review.dto.RestaurantInfoDto;
 import com.cheffi.review.dto.request.QueryRestaurantRequest;
 import com.cheffi.review.dto.request.RegisterRestaurantRequest;
